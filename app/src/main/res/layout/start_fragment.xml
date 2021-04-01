@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021 Alex Syrnikov <pioneer19@post.cz>
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.StartFragment">
+
+    <Button
+        android:id="@+id/goToSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Settings"
+        app:layout_constraintBottom_toTopOf="@+id/goToSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/goToSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Search"
+        app:layout_constraintBottom_toTopOf="@+id/goToArticle"
+        app:layout_constraintEnd_toEndOf="@+id/goToSettings"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="@+id/goToSettings"
+        app:layout_constraintTop_toBottomOf="@+id/goToSettings" />
+
+    <Button
+        android:id="@+id/goToArticle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Article"
+        app:layout_constraintEnd_toEndOf="@+id/goToSearch"
+        app:layout_constraintStart_toStartOf="@+id/goToSearch"
+        app:layout_constraintTop_toBottomOf="@+id/goToSearch" />
+</androidx.constraintlayout.widget.ConstraintLayout>
