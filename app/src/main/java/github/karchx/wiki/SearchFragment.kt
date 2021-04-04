@@ -7,6 +7,7 @@ package github.karchx.wiki
 
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,9 @@ class SearchFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        val url = "https://ru.wikipedia.org/w/api.php?action=opensearch&search=%EC%E0%F1%F2%E5%F0%20%E8%20%EC%E0%F0%E3%E0%F0%E8%F2%E0&prop=info&format=xml&inprop=url"
+        // Param: `ru` should be changed if user's system language is another
+        // Param: `search=` -- is user's request
+        val url = "https://ru.wikipedia.org/w/api.php?action=opensearch&search=Trump&format=xml"
         val contentTask = GetBasePage(url)
         contentTask.execute()
     }
@@ -51,6 +54,7 @@ class SearchFragment : Fragment() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             // Here xml (string) of base page
+            Log.d("result_exec", result.toString())
         }
     }
 
