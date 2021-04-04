@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import github.karchx.wiki.tools.search_engine.SearchEngine
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +30,7 @@ class SearchFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val engine = SearchEngine()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,25 +38,27 @@ class SearchFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        // Param: `ru` should be changed if user's system language is another
-        // Param: `search=` -- is user's request
-        val url = "https://ru.wikipedia.org/w/api.php?action=opensearch&search=Trump&format=xml"
-        val contentTask = GetBasePage(url)
+
+        val userLang = Locale.getDefault().language
+        // Param `request` -- user's request (in search textInput field)
+        val url = engine.formUrl(userLang, request = "Kotlin")
+        val contentTask = GetListOfPages(url)
+        // Start process with getting List of Pages
         contentTask.execute()
     }
 
-    private class GetBasePage(val url: String) : AsyncTask<String, String, String>() {
+    private class GetListOfPages(val url: String) : AsyncTask<String, String, String>() {
 
         override fun doInBackground(vararg params: String?): String {
             val engine = SearchEngine()
-            val content = engine.getBasePage(url)
+            val content = engine.getListOfPages(url)
             return content.toString()
         }
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            // Here xml (string) of base page
-            Log.d("result_exec", result.toString())
+            // result: List of Pages (xml format)
+            // TODO: execute info from xml to structured info (will be shown in recycler)
         }
     }
 
