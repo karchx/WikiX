@@ -76,4 +76,6 @@ dependencies {
     // OKHttp
     def okhttp_version = "4.9.0"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    // kohttp
+    implementation "io.github.rybalkinsd:kohttp:0.12.0"
 }
