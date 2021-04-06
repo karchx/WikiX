@@ -7,13 +7,13 @@ package github.karchx.wiki.tools.search_engine
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import java.io.IOException
 
 class SearchEngine {
     private val client: OkHttpClient = OkHttpClient()
+    private val formatter: JsonFormatter = JsonFormatter()
 
-    fun getListOfPages(url: String): String? {
+    fun getPagesIds(url: String): String? {
         val content: String?
 
         val request = Request.Builder()
@@ -28,11 +28,15 @@ class SearchEngine {
         } catch (e: IOException) {
             ""
         }
+
         return content
     }
 
-    fun formUrl(lang: String, request: String): String {
-        val url = "https://$lang.wikipedia.org/w/api.php?action=opensearch&search=$request&format=xml"
-        return url
+    fun getPagesInfo(content: String): ArrayList<ArrayList<String>> {
+        return formatter.listOfPages(content)
+    }
+
+    fun formUrlPages(lang: String, request: String): String {
+        return "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=$request&language=$lang&format=json"
     }
 }
