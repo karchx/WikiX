@@ -14,12 +14,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import java.util.*
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import kotlin.collections.ArrayList
 
 class SearchFragment : Fragment() {
 
@@ -28,25 +23,27 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val userLang = Locale.getDefault().language
+
         // Param `request` -- user's request (in search textInput field)
-        val url = engine.formUrl(userLang, request = "Kotlin")
+        val url = engine.formUrlPages(userLang, request = "Kotlin")
+
         val contentTask = GetListOfPages(url)
         // Start process with getting List of Pages
         contentTask.execute()
     }
 
-    private class GetListOfPages(val url: String) : AsyncTask<String, String, String>() {
+    private class GetListOfPages(val url: String) :
+        AsyncTask<String, String, ArrayList<ArrayList<String>>>() {
 
-        override fun doInBackground(vararg params: String?): String {
+        override fun doInBackground(vararg params: String?): ArrayList<ArrayList<String>> {
             val engine = SearchEngine()
-            val content = engine.getListOfPages(url)
-            return content.toString()
+            val content = engine.getPagesIds(url)
+            return engine.getPagesInfo(content!!)
         }
 
-        override fun onPostExecute(result: String?) {
+        override fun onPostExecute(result: ArrayList<ArrayList<String>>?) {
             super.onPostExecute(result)
-            // result: List of Pages (xml format)
-            // TODO: execute info from xml to structured info (will be shown in recycler)
+            Log.d("ResultOfGetting", result.toString())
         }
     }
 

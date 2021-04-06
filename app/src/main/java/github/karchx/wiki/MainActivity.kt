@@ -5,15 +5,9 @@
 
 package github.karchx.wiki
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import github.karchx.wiki.databinding.StartFragmentBinding
-import github.karchx.wiki.ui.StartFragment
-import github.karchx.wiki.ui.StartFragmentDirections
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
