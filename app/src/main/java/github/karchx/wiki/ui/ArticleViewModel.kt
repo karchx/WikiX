@@ -5,15 +5,25 @@
 
 package github.karchx.wiki.ui
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.karchx.wiki.model.Repository
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ArticleViewModel @Inject constructor(
    private val repository: Repository
 ): ViewModel() {
-   val text = repository.text
-//   val user = repository.getUser(userId).asLiveData()
+   private val _pageData = MutableLiveData<String>()
+   val response: LiveData<String> = _pageData
+
+    fun fetchPage(pageUrl: String) {
+        viewModelScope.launch {
+            repository.fetchPage(_pageData, pageUrl)
+        }
+    }
 }
