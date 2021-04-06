@@ -44,7 +44,9 @@ class StartFragment : Fragment() {
             it.findNavController().navigate(StartFragmentDirections.actionStartFragmentToSearchFragment())
         }
         binding.goToArticle.setOnClickListener {
-            it.findNavController().navigate(StartFragmentDirections.actionStartFragmentToArticleFragment())
+            it.findNavController().navigate(StartFragmentDirections.actionStartFragmentToArticleFragment(
+                    "https://en.wikipedia.org/"
+            ))
         }
 //        viewModel.text.observe(viewLifecycleOwner) {
 //            view.findViewById<TextView>(R.id.testString).text = it

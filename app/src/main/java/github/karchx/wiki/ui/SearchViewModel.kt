@@ -14,6 +14,6 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
    private val repository: Repository
 ): ViewModel() {
-   val text = repository.text
+//   val text = repository.text
 //   val user = repository.getUser(userId).asLiveData()
 }

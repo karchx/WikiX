@@ -11,26 +11,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import github.karchx.wiki.R
+import github.karchx.wiki.databinding.ArticleFragmentBinding
 
 @AndroidEntryPoint
 class ArticleFragment : Fragment() {
+    private var _binding: ArticleFragmentBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: ArticleViewModel by viewModels()
+    private val args: ArticleFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.article_fragment, container, false)
+    ): View {
+        _binding = ArticleFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        viewModel.text.observe(viewLifecycleOwner) {
-//            view.findViewById<TextView>(R.id.testString).text = it
-//        }
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.response.observe(viewLifecycleOwner){
+            binding.articlePage.loadDataWithBaseURL(
+                    args.pageUrl, it, "text/html", null, null)
+        }
+        viewModel.fetchPage( args.pageUrl )
+    }
 
 }

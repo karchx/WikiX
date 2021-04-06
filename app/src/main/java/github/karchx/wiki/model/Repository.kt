@@ -5,29 +5,43 @@
 
 package github.karchx.wiki.model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import github.karchx.wiki.model.db.AppDao
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import io.github.rybalkinsd.kohttp.ext.asString
 import javax.inject.Inject
 
 class Repository @Inject constructor(
-//    private val webservice: Webservice,
-//    // Simple in-memory cache. Details omitted for brevity.
-//    private val executor: Executor,
     private val appDao: AppDao
 ) {
-    private val _text = MutableLiveData<String>()
-    val text: LiveData<String> = _text
+//    private val _text = MutableLiveData<String>()
+//    val text: LiveData<String> = _text
 
-    init {
-        MainScope().launch {
-//           _text.value = userRepository.getUser(userId)
-            delay( 5000 )
-            _text.value = "Got value"
-        }
+    suspend fun fetchPage( data: MutableLiveData<String>, pageUrl: String ) {
+            val body = NetUtils.fetchAsync(pageUrl).asString()
+            body ?: return
+
+            data.value = body
+
+            //                { response ->
+//                    if (response.isSuccessful) {
+//                        val repos = jsonAdapter.fromJson(response.body()?.string() ?: "")
+//                        liveData.postValue(
+//                            ViewResponse(
+//                                status = "Response status ${response.message()}",
+//                                repositories = repos ?: emptyList()
+//                            )
+//                        )
+//                       _response.postValue(body!!)
+//                    } else {
+//                       _response.postValue(
+//                          "Error"
+//                            ViewResponse(
+//                                status = "Response status ${response.message()}",
+//                                repositories = emptyList()
+//                            )
+//                       )
+//                    }
+//                }
     }
 //    fun getUser(userId: String): Flow<User> {
 //        refreshUser(userId)
