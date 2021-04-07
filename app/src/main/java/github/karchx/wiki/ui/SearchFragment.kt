@@ -5,32 +5,66 @@
 
 package github.karchx.wiki.ui
 
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import android.widget.Button
+import android.widget.EditText
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
+import github.karchx.wiki.tools.search_engine.SearchEngine
+import java.util.*
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
-    private val viewModel: SearchViewModel by viewModels()
+
+    private val engine = SearchEngine()
+    private var mSearchBtn: Button? = null
+    private var mUserRequest: EditText? = null
+
+    private class GetListOfPages(val url: String) :
+        AsyncTask<String, String, ArrayList<ArrayList<String>>>() {
+
+        override fun doInBackground(vararg params: String?): ArrayList<ArrayList<String>> {
+            val engine = SearchEngine()
+            val content = engine.getPagesIds(url)
+            return engine.getPagesInfo(content!!)
+        }
+
+        override fun onPostExecute(response: ArrayList<ArrayList<String>>?) {
+            super.onPostExecute(response)
+            Log.d("UserRequest", response.toString())
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.search_fragment, container, false)
+    ): View {
+        val view: View = inflater.inflate(R.layout.search_fragment, container, false)
+        initRes(view)
+
+        mSearchBtn!!.setOnClickListener {
+            mUserRequest = view.findViewById(R.id.editTextUserRequest)
+            val userRequest = mUserRequest!!.text.toString()
+
+            // Param `request` -- user's request (in search textInput field)
+            val url = engine.formUrlPages("en", request = userRequest)
+
+            val contentTask = GetListOfPages(url)
+            // Start process with getting List of Pages
+            contentTask.execute()
+        }
+
+        // Return the fragment view/layout
+        return view
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        viewModel.text.observe(viewLifecycleOwner) {
-//            view.findViewById<TextView>(R.id.testString).text = it
-//        }
-//    }
-
+    private fun initRes(view: View) {
+        mSearchBtn = view.findViewById(R.id.searchButton) as Button
+    }
 }
