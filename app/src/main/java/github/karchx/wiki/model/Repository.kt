@@ -5,9 +5,11 @@
 
 package github.karchx.wiki.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import github.karchx.wiki.model.db.AppDao
 import io.github.rybalkinsd.kohttp.ext.asString
+import org.json.JSONObject
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -17,31 +19,18 @@ class Repository @Inject constructor(
 //    val text: LiveData<String> = _text
 
     suspend fun fetchPage( data: MutableLiveData<String>, pageUrl: String ) {
+        try {
             val body = NetUtils.fetchAsync(pageUrl).asString()
             body ?: return
 
-            data.value = body
-
-            //                { response ->
-//                    if (response.isSuccessful) {
-//                        val repos = jsonAdapter.fromJson(response.body()?.string() ?: "")
-//                        liveData.postValue(
-//                            ViewResponse(
-//                                status = "Response status ${response.message()}",
-//                                repositories = repos ?: emptyList()
-//                            )
-//                        )
-//                       _response.postValue(body!!)
-//                    } else {
-//                       _response.postValue(
-//                          "Error"
-//                            ViewResponse(
-//                                status = "Response status ${response.message()}",
-//                                repositories = emptyList()
-//                            )
-//                       )
-//                    }
-//                }
+            val json = JSONObject( body )
+            data.value = json.getJSONObject( "parse" )
+                    .getJSONObject("text")
+                    .getString("*")
+        } catch ( ex : Exception )
+        {
+            Log.i( "fetchPage", "error: ${ex.message}" )
+        }
     }
 //    fun getUser(userId: String): Flow<User> {
 //        refreshUser(userId)

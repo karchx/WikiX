@@ -36,9 +36,14 @@ class ArticleFragment : Fragment() {
 
         viewModel.response.observe(viewLifecycleOwner){
             binding.articlePage.loadDataWithBaseURL(
-                    args.pageUrl, it, "text/html", null, null)
+                    articleHtmlUrl(args.article,args.lang), it, "text/html", null, null)
         }
-        viewModel.fetchPage( args.pageUrl )
+        viewModel.fetchJsonPage( articleJsonUrl(args.article,args.lang) )
     }
-
+    private fun articleJsonUrl(article: String, lang: String ) : String {
+        return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&page=${article}&prop=text&format=json"
+    }
+    private fun articleHtmlUrl(article: String, lang: String ) : String {
+        return "https://${lang}.wikipedia.org/wiki/${article}"
+    }
 }
