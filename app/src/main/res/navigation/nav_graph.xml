@@ -36,7 +36,11 @@
         android:label="article_fragment"
         tools:layout="@layout/article_fragment" >
         <argument
-            android:name="pageUrl"
+            android:name="article"
             app:argType="string" />
+        <argument
+            android:name="lang"
+            app:argType="string"
+            android:defaultValue="en" />
     </fragment>
 </navigation>

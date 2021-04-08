@@ -21,7 +21,7 @@ class ArticleViewModel @Inject constructor(
    private val _pageData = MutableLiveData<String>()
    val response: LiveData<String> = _pageData
 
-    fun fetchPage(pageUrl: String) {
+    fun fetchJsonPage(pageUrl: String) {
         viewModelScope.launch {
             repository.fetchPage(_pageData, pageUrl)
         }

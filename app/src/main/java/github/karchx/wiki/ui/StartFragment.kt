@@ -45,7 +45,7 @@ class StartFragment : Fragment() {
         }
         binding.goToArticle.setOnClickListener {
             it.findNavController().navigate(StartFragmentDirections.actionStartFragmentToArticleFragment(
-                    "https://en.wikipedia.org/"
+                    "Pet_door"
             ))
         }
 //        viewModel.text.observe(viewLifecycleOwner) {

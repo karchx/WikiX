@@ -1,3 +1,8 @@
+/*
+ * Copyright 2021 Alex Syrnikov <pioneer19@post.cz>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package github.karchx.wiki.model
 
 import io.github.rybalkinsd.kohttp.dsl.async.httpGetAsync
