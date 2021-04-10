@@ -7,7 +7,6 @@ package github.karchx.wiki.ui
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +24,7 @@ class SearchFragment : Fragment() {
     private val engine = SearchEngine()
     private var mSearchBtn: Button? = null
     private var mUserRequest: EditText? = null
+    var _view: View? = null
 
     private class GetListOfPages(val url: String) :
         AsyncTask<String, String, ArrayList<ArrayList<String>>>() {
@@ -37,7 +37,6 @@ class SearchFragment : Fragment() {
 
         override fun onPostExecute(response: ArrayList<ArrayList<String>>?) {
             super.onPostExecute(response)
-            Log.d("UserRequest", response.toString())
         }
     }
 
@@ -45,11 +44,11 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view: View = inflater.inflate(R.layout.search_fragment, container, false)
-        initRes(view)
+        _view = inflater.inflate(R.layout.search_fragment, container, false)
+        initRes(_view!!)
 
         mSearchBtn!!.setOnClickListener {
-            mUserRequest = view.findViewById(R.id.editTextUserRequest)
+            mUserRequest = _view!!.findViewById(R.id.editTextUserRequest)
             val userRequest = mUserRequest!!.text.toString()
 
             // Param `request` -- user's request (in search textInput field)
@@ -61,7 +60,7 @@ class SearchFragment : Fragment() {
         }
 
         // Return the fragment view/layout
-        return view
+        return _view!!
     }
 
     private fun initRes(view: View) {
