@@ -15,10 +15,11 @@ import github.karchx.wiki.R
 class ArticlesListAdapter(
     private val titles: ArrayList<String>,
     private val descriptions: ArrayList<String>
-) :  RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
+) : RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.articles_layout, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.articles_layout, parent, false)
         return ArticlesViewHolder(view)
     }
 
