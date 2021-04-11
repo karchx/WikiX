@@ -6,21 +6,22 @@
 package github.karchx.wiki.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
+import github.karchx.wiki.adapters.ArticlesListAdapter
 import github.karchx.wiki.model.db.AppDatabase
 import github.karchx.wiki.tools.search_engine.SearchEngine
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
+import kotlinx.coroutines.*
+
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -43,7 +44,7 @@ class SearchFragment : Fragment() {
             val userRequest = mUserRequest!!.text.toString()
 
             val job: Job = GlobalScope.launch(Dispatchers.IO) {
-                getArticles(userRequest)
+                showAndCache(getArticles(userRequest))
             }
             job.start()
         }
@@ -52,9 +53,34 @@ class SearchFragment : Fragment() {
         return _view!!
     }
 
+    private suspend fun showAndCache(articles: ArrayList<ArrayList<String>>) =
+        withContext(Dispatchers.Main) {
+            val titles: ArrayList<String> = ArrayList()
+            val descriptions: ArrayList<String> = ArrayList()
+
+            for (article in articles) {
+                Log.d("article", article.toString())
+                titles.add(article[1])
+                descriptions.add(article[2])
+            }
+
+            // init recycler
+            val layoutManager = GridLayoutManager(context, 1)
+            Log.d("titles", titles.toString())
+            Log.d("descriptions", descriptions.toString())
+            val adapter = ArticlesListAdapter(titles, descriptions)
+            val recyclerView =
+                requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+
+            // Show list of articles on display (recycler)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = adapter
+        }
+
     private fun getArticles(request: String): ArrayList<ArrayList<String>> {
         // Param `request` -- user's request (in search textInput field)
-        val url = engine.formUrlPages("en", request)
+        val url = engine.formUrl("en", request)
         val engine = SearchEngine()
         val content = engine.getPagesIds(url)!!
         return engine.getPagesInfo(content)

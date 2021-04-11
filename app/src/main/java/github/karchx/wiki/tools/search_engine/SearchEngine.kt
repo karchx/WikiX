@@ -36,7 +36,7 @@ class SearchEngine {
         return formatter.listOfPages(content)
     }
 
-    fun formUrlPages(lang: String, request: String): String {
+    fun formUrl(lang: String, request: String): String {
         return "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=$request&language=$lang&format=json"
     }
 }
