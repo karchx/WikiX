@@ -13,15 +13,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
 import github.karchx.wiki.listeners.ArticleItemClickListener
-import github.karchx.wiki.model.db.AppDatabase
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import kotlinx.coroutines.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
@@ -81,10 +83,22 @@ class SearchFragment : Fragment() {
                     object : ArticleItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d("Clicked item: ", position.toString())
+                            findNavController().navigate(
+                                SearchFragmentDirections.actionSearchFragmentToArticleFragment(
+                                    titles[position],
+                                    Locale.getDefault().language
+                                )
+                            )
                         }
 
                         override fun onItemLongClick(view: View, position: Int) {
                             Log.d("Long Clicked item: ", position.toString())
+                            findNavController().navigate(
+                                SearchFragmentDirections.actionSearchFragmentToArticleFragment(
+                                    titles[position],
+                                    Locale.getDefault().language
+                                )
+                            )
                         }
                     })
             )
@@ -92,7 +106,7 @@ class SearchFragment : Fragment() {
 
     private fun getArticles(request: String): ArrayList<ArrayList<String>> {
         // Param `request` -- user's request (in search textInput field)
-        val url = engine.formUrl("en", request)
+        val url = engine.formUrl(Locale.getDefault().language, request)
         val engine = SearchEngine()
         val content = engine.getPagesIds(url)!!
         return engine.getPagesInfo(content)
