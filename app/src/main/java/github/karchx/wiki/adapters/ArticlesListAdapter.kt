@@ -1,3 +1,8 @@
+/*
+ * Copyright 2021 Andrey Karchevsky <karch.andrus@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package github.karchx.wiki.adapters
 
 import android.view.LayoutInflater
@@ -7,7 +12,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import github.karchx.wiki.R
 
-class ArticlesListAdapter(private val titles: ArrayList<String>, private val descriptions: ArrayList<String>) :  RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
+class ArticlesListAdapter(
+    private val titles: ArrayList<String>,
+    private val descriptions: ArrayList<String>
+) :  RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.articles_layout, parent, false)
