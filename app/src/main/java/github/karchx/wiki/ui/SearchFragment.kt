@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
+import github.karchx.wiki.listeners.ArticleItemClickListener
 import github.karchx.wiki.model.db.AppDatabase
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import kotlinx.coroutines.*
@@ -30,7 +31,6 @@ class SearchFragment : Fragment() {
     private var mSearchBtn: Button? = null
     private var mUserRequest: EditText? = null
     private var _view: View? = null
-    private var db: AppDatabase? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,15 +59,12 @@ class SearchFragment : Fragment() {
             val descriptions: ArrayList<String> = ArrayList()
 
             for (article in articles) {
-                Log.d("article", article.toString())
                 titles.add(article[1])
                 descriptions.add(article[2])
             }
 
             // init recycler
             val layoutManager = GridLayoutManager(context, 1)
-            Log.d("titles", titles.toString())
-            Log.d("descriptions", descriptions.toString())
             val adapter = ArticlesListAdapter(titles, descriptions)
             val recyclerView =
                 requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
@@ -76,6 +73,21 @@ class SearchFragment : Fragment() {
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = adapter
+
+            recyclerView.addOnItemTouchListener(
+                ArticleItemClickListener(
+                    requireContext(),
+                    recyclerView,
+                    object : ArticleItemClickListener.OnItemClickListener {
+                        override fun onItemClick(view: View, position: Int) {
+                            Log.d("Clicked item: ", position.toString())
+                        }
+
+                        override fun onItemLongClick(view: View, position: Int) {
+                            Log.d("Long Clicked item: ", position.toString())
+                        }
+                    })
+            )
         }
 
     private fun getArticles(request: String): ArrayList<ArrayList<String>> {
