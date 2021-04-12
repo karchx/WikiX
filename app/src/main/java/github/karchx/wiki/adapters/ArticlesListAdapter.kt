@@ -14,7 +14,7 @@ import github.karchx.wiki.R
 
 class ArticlesListAdapter(
     private val titles: ArrayList<String>,
-    private val descriptions: ArrayList<String>
+    private val pageIds: ArrayList<String>
 ) : RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
@@ -24,11 +24,11 @@ class ArticlesListAdapter(
     }
 
     override fun onBindViewHolder(holder: ArticlesViewHolder, position: Int) {
-        val title = titles[position]
-        val desc = descriptions[position]
+        val title  = titles[position]
+        val pageId = pageIds[position]
 
         holder.title.text = title
-        holder.desc.text = desc
+        holder.pageId.text = pageId
     }
 
     override fun getItemCount(): Int {
@@ -37,6 +37,6 @@ class ArticlesListAdapter(
 
     class ArticlesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var title: TextView = itemView.findViewById(R.id.textViewArticleTitle)
-        var desc: TextView = itemView.findViewById(R.id.textViewArticleDescription)
+        var pageId: TextView = itemView.findViewById(R.id.textViewArticleDescription)
     }
 }

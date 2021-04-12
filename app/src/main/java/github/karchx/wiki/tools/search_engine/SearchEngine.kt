@@ -37,6 +37,6 @@ class SearchEngine {
     }
 
     fun formUrl(lang: String, request: String): String {
-        return "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=$request&language=$lang&format=json"
+        return "https://${lang}.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=${request}&srwhat=text"
     }
 }
