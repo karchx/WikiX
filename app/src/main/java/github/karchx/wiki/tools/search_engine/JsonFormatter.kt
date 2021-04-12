@@ -12,16 +12,16 @@ class JsonFormatter {
 
         // decode json to "normal" style
         val jsonStr = unicodeFormatter.decode(jsonInp)
-        val obj = JSONObject(jsonStr)
+        val obj = JSONObject(jsonStr).getJSONObject("query")
         val arrOfPages = obj.getJSONArray("search")
 
         // get Pages info (will be shown in recycler)
         for (i in 0 until arrOfPages.length()) {
-            val pageUrl = arrOfPages.getJSONObject(i).getString("url")
-            val pageLabel = arrOfPages.getJSONObject(i).getString("label")
-            val pageDesc = arrOfPages.getJSONObject(i).getString("description")
+            val pageTitle = arrOfPages.getJSONObject(i).getString("title")
+            val pageId = arrOfPages.getJSONObject(i).getString("pageid")
+            val pageSnippet = arrOfPages.getJSONObject(i).getString("snippet")
 
-            pagesData.add(arrayListOf(pageUrl, pageLabel, pageDesc))
+            pagesData.add(arrayListOf(pageTitle, pageId, pageSnippet))
         }
 
         return pagesData

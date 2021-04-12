@@ -45,7 +45,7 @@ class StartFragment : Fragment() {
         }
         binding.goToArticle.setOnClickListener {
             it.findNavController().navigate(StartFragmentDirections.actionStartFragmentToArticleFragment(
-                    "Pet_door"
+                    "21492751"
             ))
         }
 //        viewModel.text.observe(viewLifecycleOwner) {

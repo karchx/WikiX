@@ -6,6 +6,7 @@
 package github.karchx.wiki.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -68,14 +69,15 @@ class ArticleFragment : Fragment() {
             // вот ссылка на WebView из article_fragment.xml layout без findViewById
             // через binding
             binding.articlePage.loadDataWithBaseURL(
-                    articleHtmlUrl(args.article,args.lang), it, "text/html", null, null)
+                    articleHtmlUrl(args.articleId, args.lang), it, "text/html", null, null)
         }
-        viewModel.fetchJsonPage( articleJsonUrl(args.article,args.lang) )
+        viewModel.fetchJsonPage( articleJsonUrl(args.articleId,args.lang) )
     }
-    private fun articleJsonUrl(article: String, lang: String ) : String {
-        return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&page=${article}&prop=text&format=json"
+    private fun articleJsonUrl(articleId: String, lang: String ) : String {
+        Log.i("articleJsonUrl", "id ${articleId}, lang ${lang}")
+        return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
     }
-    private fun articleHtmlUrl(article: String, lang: String ) : String {
-        return "https://${lang}.wikipedia.org/wiki/${article}"
+    private fun articleHtmlUrl(articleId: String, lang: String ) : String {
+        return "https://${lang}.wikipedia.org/wiki/${articleId}"
     }
 }

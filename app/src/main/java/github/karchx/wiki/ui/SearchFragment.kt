@@ -58,16 +58,16 @@ class SearchFragment : Fragment() {
     private suspend fun showAndCache(articles: ArrayList<ArrayList<String>>) =
         withContext(Dispatchers.Main) {
             val titles: ArrayList<String> = ArrayList()
-            val descriptions: ArrayList<String> = ArrayList()
+            val pageIds: ArrayList<String> = ArrayList()
 
             for (article in articles) {
-                titles.add(article[1])
-                descriptions.add(article[2])
+                titles.add(article[0])
+                pageIds.add(article[1])
             }
 
             // init recycler
             val layoutManager = GridLayoutManager(context, 1)
-            val adapter = ArticlesListAdapter(titles, descriptions)
+            val adapter = ArticlesListAdapter(titles, pageIds)
             val recyclerView =
                 requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
@@ -85,7 +85,7 @@ class SearchFragment : Fragment() {
                             Log.d("Clicked item: ", position.toString())
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                    titles[position],
+                                    pageIds[position],
                                     Locale.getDefault().language
                                 )
                             )
@@ -95,7 +95,7 @@ class SearchFragment : Fragment() {
                             Log.d("Long Clicked item: ", position.toString())
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                    titles[position],
+                                    pageIds[position],
                                     Locale.getDefault().language
                                 )
                             )
