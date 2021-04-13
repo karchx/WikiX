@@ -19,7 +19,7 @@ class ArticlesListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.articles_layout, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.search_article_item, parent, false)
         return ArticlesViewHolder(view)
     }
 
