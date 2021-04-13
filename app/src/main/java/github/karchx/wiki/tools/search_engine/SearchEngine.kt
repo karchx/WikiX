@@ -32,8 +32,12 @@ class SearchEngine {
         return content
     }
 
-    fun getPagesInfo(content: String): ArrayList<ArrayList<String>> {
-        return formatter.listOfPages(content)
+    fun getPagesInfo(content: String): ArrayList<ArrayList<String>>? {
+        return if (content.isNotEmpty()) {
+            formatter.listOfPages(content)
+        } else {
+            null
+        }
     }
 
     fun formUrl(lang: String, request: String): String {

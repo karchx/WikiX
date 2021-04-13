@@ -6,12 +6,12 @@
 package github.karchx.wiki.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -44,11 +44,20 @@ class SearchFragment : Fragment() {
         mSearchBtn!!.setOnClickListener {
             mUserRequest = _view!!.findViewById(R.id.editTextUserRequest)
             val userRequest = mUserRequest!!.text.toString()
-
-            val job: Job = GlobalScope.launch(Dispatchers.IO) {
-                showAndCache(getArticles(userRequest))
+            if (!isEmptyField(userRequest)) {
+                val job: Job = GlobalScope.launch(Dispatchers.IO) {
+                    if (getArticles(userRequest)?.equals(null) == false) {
+                        getArticles(userRequest)?.let { it1 -> showAndCache(it1) }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showNoConnectionError()
+                        }
+                    }
+                }
+                job.start()
+            } else {
+                showEmptyFieldError(mUserRequest!!)
             }
-            job.start()
         }
 
         // Return the fragment view/layout
@@ -57,59 +66,92 @@ class SearchFragment : Fragment() {
 
     private suspend fun showAndCache(articles: ArrayList<ArrayList<String>>) =
         withContext(Dispatchers.Main) {
-            val titles: ArrayList<String> = ArrayList()
-            val pageIds: ArrayList<String> = ArrayList()
+            if (!foundAnyPages(articles)) {
+                showIncorrectFieldTextError(mUserRequest!!)
+            } else {
+                val titles: ArrayList<String> = ArrayList()
+                val pageIds: ArrayList<String> = ArrayList()
 
-            for (article in articles) {
-                titles.add(article[0])
-                pageIds.add(article[1])
+                for (article in articles) {
+                    titles.add(article[0])
+                    // TODO: improve this param (show description instead of page ID)
+                    pageIds.add(article[1])
+                }
+
+                // init recycler
+                val layoutManager = GridLayoutManager(context, 1)
+                val adapter = ArticlesListAdapter(titles, pageIds)
+                val recyclerView =
+                    requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+
+                // Show list of articles on display (recycler)
+                recyclerView.setHasFixedSize(true)
+                recyclerView.layoutManager = layoutManager
+                recyclerView.adapter = adapter
+
+                recyclerView.addOnItemTouchListener(
+                    ArticleItemClickListener(
+                        requireContext(),
+                        recyclerView,
+                        object : ArticleItemClickListener.OnItemClickListener {
+                            override fun onItemClick(view: View, position: Int) {
+                                findNavController().navigate(
+                                    SearchFragmentDirections.actionSearchFragmentToArticleFragment(
+                                        pageIds[position],
+                                        Locale.getDefault().language
+                                    )
+                                )
+                            }
+
+                            override fun onItemLongClick(view: View, position: Int) {
+                                findNavController().navigate(
+                                    SearchFragmentDirections.actionSearchFragmentToArticleFragment(
+                                        pageIds[position],
+                                        Locale.getDefault().language
+                                    )
+                                )
+                            }
+                        })
+                )
             }
-
-            // init recycler
-            val layoutManager = GridLayoutManager(context, 1)
-            val adapter = ArticlesListAdapter(titles, pageIds)
-            val recyclerView =
-                requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
-
-            // Show list of articles on display (recycler)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.layoutManager = layoutManager
-            recyclerView.adapter = adapter
-
-            recyclerView.addOnItemTouchListener(
-                ArticleItemClickListener(
-                    requireContext(),
-                    recyclerView,
-                    object : ArticleItemClickListener.OnItemClickListener {
-                        override fun onItemClick(view: View, position: Int) {
-                            Log.d("Clicked item: ", position.toString())
-                            findNavController().navigate(
-                                SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                    pageIds[position],
-                                    Locale.getDefault().language
-                                )
-                            )
-                        }
-
-                        override fun onItemLongClick(view: View, position: Int) {
-                            Log.d("Long Clicked item: ", position.toString())
-                            findNavController().navigate(
-                                SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                    pageIds[position],
-                                    Locale.getDefault().language
-                                )
-                            )
-                        }
-                    })
-            )
         }
 
-    private fun getArticles(request: String): ArrayList<ArrayList<String>> {
+    private fun getArticles(request: String): ArrayList<ArrayList<String>>? {
         // Param `request` -- user's request (in search textInput field)
         val url = engine.formUrl(Locale.getDefault().language, request)
         val engine = SearchEngine()
         val content = engine.getPagesIds(url)!!
         return engine.getPagesInfo(content)
+    }
+
+    private fun showEmptyFieldError(textField: EditText) {
+        val errorMessage = "This field cannot be empty"
+        textField.error = errorMessage
+        // mUserRequest!!.setTextColor(resources.getColor(R.color.some_color, theme))
+        textField.requestFocus()
+    }
+
+    private fun isEmptyField(fieldContent: String): Boolean {
+        return fieldContent.trim { it <= ' ' }.isEmpty()
+    }
+
+    private fun foundAnyPages(content: ArrayList<ArrayList<String>>): Boolean {
+        return content.isNotEmpty()
+    }
+
+    private fun showIncorrectFieldTextError(textField: EditText) {
+        val errorMessage = "Incorrect request. Nothing found"
+        textField.error = errorMessage
+        // mUserRequest!!.setTextColor(resources.getColor(R.color.some_color, theme))
+        textField.requestFocus()
+    }
+
+    private fun showNoConnectionError() {
+        val text = "No internet, check your connection"
+        val duration = Toast.LENGTH_SHORT
+
+        val toast = Toast.makeText(requireContext(), text, duration)
+        toast.show()
     }
 
     private fun initRes(view: View) {
