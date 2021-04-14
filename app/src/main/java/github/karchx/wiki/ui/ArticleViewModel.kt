@@ -16,14 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArticleViewModel @Inject constructor(
-   private val repository: Repository
+    private val repository: Repository
 ): ViewModel() {
-   private val _pageData = MutableLiveData<String>()
-   val response: LiveData<String> = _pageData
+    private val _articlePage = MutableLiveData<ArticlePage>()
+    val articlePage: LiveData<ArticlePage> = _articlePage
 
     fun fetchJsonPage(pageUrl: String) {
         viewModelScope.launch {
-            repository.fetchPage(_pageData, pageUrl)
+            repository.fetchArticlePage( _articlePage, pageUrl )
         }
     }
 }
+data class ArticlePage(var pageId: Int, var title: String, var text: String )
