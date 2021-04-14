@@ -27,7 +27,6 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 

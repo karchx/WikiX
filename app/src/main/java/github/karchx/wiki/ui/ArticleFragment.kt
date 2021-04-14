@@ -6,7 +6,6 @@
 package github.karchx.wiki.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,19 +35,17 @@ class ArticleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.response.observe(viewLifecycleOwner){
-            // вот ссылка на WebView из article_fragment.xml layout без findViewById
-            // через binding
+        viewModel.articlePage.observe(viewLifecycleOwner){ articlePage ->
             binding.articlePage.loadDataWithBaseURL(
-                    articleHtmlUrl(args.articleId, args.lang), it, "text/html", null, null)
+                    articleHtmlUrl(articlePage.title, args.lang)
+                    , articlePage.text, "text/html", null, null )
         }
-        viewModel.fetchJsonPage( articleJsonUrl(args.articleId,args.lang) )
+        viewModel.fetchJsonPage( articleJsonUrl(args.articleId, args.lang) )
     }
     private fun articleJsonUrl(articleId: String, lang: String ) : String {
-        Log.i("articleJsonUrl", "id ${articleId}, lang ${lang}")
         return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
     }
-    private fun articleHtmlUrl(articleId: String, lang: String ) : String {
-        return "https://${lang}.wikipedia.org/wiki/${articleId}"
+    private fun articleHtmlUrl(articleTitle: String, lang: String ) : String {
+        return "https://${lang}.wikipedia.org/wiki/${articleTitle}"
     }
 }

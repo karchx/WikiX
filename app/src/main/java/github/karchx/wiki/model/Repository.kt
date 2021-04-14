@@ -8,6 +8,7 @@ package github.karchx.wiki.model
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import github.karchx.wiki.model.db.AppDao
+import github.karchx.wiki.ui.ArticlePage
 import io.github.rybalkinsd.kohttp.ext.asString
 import org.json.JSONObject
 import javax.inject.Inject
@@ -15,21 +16,20 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val appDao: AppDao
 ) {
-//    private val _text = MutableLiveData<String>()
-//    val text: LiveData<String> = _text
-
-    suspend fun fetchPage( data: MutableLiveData<String>, pageUrl: String ) {
+    suspend fun fetchArticlePage( liveData: MutableLiveData<ArticlePage>, pageUrl: String ) {
         try {
             val body = NetUtils.fetchAsync(pageUrl).asString()
             body ?: return
 
-            val json = JSONObject( body )
-            data.value = json.getJSONObject( "parse" )
-                    .getJSONObject("text")
-                    .getString("*")
+            val json = JSONObject( body ).getJSONObject( "parse" )
+            val articlePage = ArticlePage(
+                    json.getInt("pageid")
+                            ,json.getString("title")
+                            ,json.getJSONObject("text").getString("*") )
+            liveData.value = articlePage
         } catch ( ex : Exception )
         {
-            Log.i( "fetchPage", "error: ${ex.message}" )
+            Log.i( "fetchArticlePage", "error: ${ex.message}" )
         }
     }
 }
