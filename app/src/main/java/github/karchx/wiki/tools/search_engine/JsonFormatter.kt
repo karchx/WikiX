@@ -12,8 +12,8 @@ class JsonFormatter {
 
     private val unicodeFormatter: UnicodeFormatter = UnicodeFormatter()
 
-    fun listOfPages(jsonInp: String): ArrayList<ArrayList<String>> {
-        val pagesData: ArrayList<ArrayList<String>> = arrayListOf()
+    fun listOfPages(jsonInp: String): ArrayList<ArticleItem> {
+        val pagesData: ArrayList<ArticleItem> = arrayListOf()
 
         val jsonStr = unicodeFormatter.decode(jsonInp)
         val obj = JSONObject(jsonStr).getJSONObject("query")
@@ -25,7 +25,7 @@ class JsonFormatter {
             val pageId = arrOfPages.getJSONObject(i).getString("pageid")
             val pageSnippet = arrOfPages.getJSONObject(i).getString("snippet")
 
-            pagesData.add(arrayListOf(pageTitle, pageId, pageSnippet))
+            pagesData.add(ArticleItem(pageTitle, pageId, pageSnippet))
         }
 
         return pagesData

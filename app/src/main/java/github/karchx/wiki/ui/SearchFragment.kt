@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
 import github.karchx.wiki.listeners.ArticleItemClickListener
+import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import kotlinx.coroutines.*
 import java.util.*
@@ -46,8 +47,8 @@ class SearchFragment : Fragment() {
             val userRequest = mUserRequest!!.text.toString()
             if (!isEmptyField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
-                    if (getArticles(userRequest)?.equals(null) == false) {
-                        getArticles(userRequest)?.let { it1 -> showAndCache(it1) }
+                    if (!getArticles(userRequest).equals(null)) {
+                        showAndCache(getArticles(userRequest))
                     } else {
                         requireActivity().runOnUiThread {
                             showNoConnectionError()
@@ -64,7 +65,7 @@ class SearchFragment : Fragment() {
         return _view!!
     }
 
-    private suspend fun showAndCache(articles: ArrayList<ArrayList<String>>) =
+    private suspend fun showAndCache(articles: ArrayList<ArticleItem>) =
         withContext(Dispatchers.Main) {
             if (!foundAnyPages(articles)) {
                 showIncorrectFieldTextError(mUserRequest!!)
@@ -73,9 +74,9 @@ class SearchFragment : Fragment() {
                 val pageIds: ArrayList<String> = ArrayList()
 
                 for (article in articles) {
-                    titles.add(article[0])
+                    titles.add(article.title)
                     // TODO: improve this param (show description instead of page ID)
-                    pageIds.add(article[1])
+                    pageIds.add(article.pageId)
                 }
 
                 // init recycler
@@ -116,7 +117,7 @@ class SearchFragment : Fragment() {
             }
         }
 
-    private fun getArticles(request: String): ArrayList<ArrayList<String>>? {
+    private fun getArticles(request: String): ArrayList<ArticleItem> {
         // Param `request` -- user's request (in search textInput field)
         val url = engine.formUrl(Locale.getDefault().language, request)
         val engine = SearchEngine()
@@ -135,7 +136,7 @@ class SearchFragment : Fragment() {
         return fieldContent.trim { it <= ' ' }.isEmpty()
     }
 
-    private fun foundAnyPages(content: ArrayList<ArrayList<String>>): Boolean {
+    private fun foundAnyPages(content: ArrayList<ArticleItem>): Boolean {
         return content.isNotEmpty()
     }
 

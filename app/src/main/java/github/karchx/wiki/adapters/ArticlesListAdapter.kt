@@ -24,7 +24,7 @@ class ArticlesListAdapter(
     }
 
     override fun onBindViewHolder(holder: ArticlesViewHolder, position: Int) {
-        val title  = titles[position]
+        val title = titles[position]
         val pageId = pageIds[position]
 
         holder.title.text = title
