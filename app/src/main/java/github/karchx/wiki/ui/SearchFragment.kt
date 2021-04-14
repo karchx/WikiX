@@ -12,8 +12,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,6 +93,9 @@ class SearchFragment : Fragment() {
                 recyclerView.setHasFixedSize(true)
                 recyclerView.layoutManager = layoutManager
                 recyclerView.adapter = adapter
+                val itemDecoration = DividerItemDecoration(recyclerView.context, layoutManager.orientation)
+                itemDecoration.setDrawable(getDrawable(recyclerView.context,R.drawable.recicle_view_divider)!!)
+                recyclerView.addItemDecoration(itemDecoration)
 
                 recyclerView.addOnItemTouchListener(
                     ArticleItemClickListener(
