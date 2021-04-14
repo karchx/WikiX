@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
+import github.karchx.wiki.databinding.SearchFragmentBinding
 import github.karchx.wiki.listeners.ArticleItemClickListener
 import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
@@ -30,20 +31,22 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
+    private var _binding: SearchFragmentBinding? = null
+    private val binding get() = _binding!!
+
     private val engine = SearchEngine()
     private var mSearchBtn: Button? = null
     private var mUserRequest: EditText? = null
-    private var _view: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _view = inflater.inflate(R.layout.search_fragment, container, false)
-        initRes(_view!!)
+        _binding = SearchFragmentBinding.inflate(inflater, container, false)
+        mSearchBtn = binding.searchButton
 
         mSearchBtn!!.setOnClickListener {
-            mUserRequest = _view!!.findViewById(R.id.editTextUserRequest)
+            mUserRequest = binding.editTextUserRequest
             val userRequest = mUserRequest!!.text.toString()
             if (!isEmptyField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
@@ -62,7 +65,7 @@ class SearchFragment : Fragment() {
         }
 
         // Return the fragment view/layout
-        return _view!!
+        return binding.root
     }
 
     private suspend fun showAndCache(articles: ArrayList<ArticleItem>) =
@@ -153,9 +156,5 @@ class SearchFragment : Fragment() {
 
         val toast = Toast.makeText(requireContext(), text, duration)
         toast.show()
-    }
-
-    private fun initRes(view: View) {
-        mSearchBtn = view.findViewById(R.id.searchButton) as Button
     }
 }
