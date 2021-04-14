@@ -32,25 +32,4 @@ class Repository @Inject constructor(
             Log.i( "fetchPage", "error: ${ex.message}" )
         }
     }
-//    fun getUser(userId: String): Flow<User> {
-//        refreshUser(userId)
-//        // Returns a Flow object directly from the database.
-//        return userDao.load(userId)
-//    }
-//
-//    private suspend fun refreshUser(userId: String) {
-//        // Check if user data was fetched recently.
-//        val userExists = userDao.hasUser(FRESH_TIMEOUT)
-//        if (!userExists) {
-//            // Refreshes the data.
-//            val response = webservice.getUser(userId)
-//
-//            // Check for errors here.
-//
-//            // Updates the database. Since `userDao.load()` returns an object of
-//            // `Flow<User>`, a new `User` object is emitted every time there's a
-//            // change in the `User`  table.
-//            userDao.save(response.body()!!)
-//        }
-//    }
 }
