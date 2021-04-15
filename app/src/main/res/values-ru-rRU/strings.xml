@@ -6,4 +6,6 @@
     <string name="empty_field_error">Это поле не может быть пустым</string>
     <string name="incorrect_request_error">Ничего не найдено, сформулируйте запрос иначе</string>
     <string name="internet_connection_error">Нет интернете, проверьте настройки сети</string>
+    <string name="search_in_wikipedia">Поиск в Википедии</string>
+    <string name="find_button">Поиск</string>
 </resources>
