@@ -80,14 +80,13 @@ class SearchFragment : Fragment() {
                 for (article in articles) {
                     titles.add(article.title)
                     // TODO: improve this param (show description instead of page ID)
-                    pageIds.add(article.pageId)
+                    pageIds.add(article.description)
                 }
 
                 // init recycler
                 val layoutManager = GridLayoutManager(context, 1)
                 val adapter = ArticlesListAdapter(titles, pageIds)
-                val recyclerView =
-                    requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+                val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
                 // Show list of articles on display (recycler)
                 recyclerView.setHasFixedSize(true)

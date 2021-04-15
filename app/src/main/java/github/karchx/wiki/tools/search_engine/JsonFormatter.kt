@@ -5,12 +5,14 @@
 
 package github.karchx.wiki.tools.search_engine
 
+import android.util.Log
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 
 class JsonFormatter {
 
     private val unicodeFormatter: UnicodeFormatter = UnicodeFormatter()
+    private val htmlFormatter: HtmlFormatter = HtmlFormatter()
 
     fun listOfPages(jsonInp: String): ArrayList<ArticleItem> {
         val pagesData: ArrayList<ArticleItem> = arrayListOf()
@@ -24,8 +26,9 @@ class JsonFormatter {
             val pageTitle = arrOfPages.getJSONObject(i).getString("title")
             val pageId = arrOfPages.getJSONObject(i).getString("pageid")
             val pageSnippet = arrOfPages.getJSONObject(i).getString("snippet")
+            val description = htmlFormatter.html2str(pageSnippet)
 
-            pagesData.add(ArticleItem(pageTitle, pageId, pageSnippet))
+            pagesData.add(ArticleItem(pageTitle, pageId, description))
         }
 
         return pagesData
