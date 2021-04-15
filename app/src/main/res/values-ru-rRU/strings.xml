@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Настройки</string>
+    <string name="search">Поиск</string>
+    <string name="saved_articles">Сохранённые статьи</string>
+    <string name="empty_field_error">Это поле не может быть пустым</string>
+    <string name="incorrect_request_error">Ничего не найдено, сформулируйте запрос иначе</string>
+    <string name="internet_connection_error">Нет интернете, проверьте настройки сети</string>
+</resources>

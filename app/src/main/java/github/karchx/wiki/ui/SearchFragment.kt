@@ -51,9 +51,12 @@ class SearchFragment : Fragment() {
             val userRequest = mUserRequest!!.text.toString()
             if (!isEmptyField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
+                    // null here returns if in getArticles() was internet connection error
                     if (!getArticles(userRequest).equals(null)) {
                         showAndCache(getArticles(userRequest))
                     } else {
+                        // Handle here internet connection error;
+                        // display toast with description in UI thread
                         requireActivity().runOnUiThread {
                             showNoConnectionError()
                         }
@@ -75,25 +78,26 @@ class SearchFragment : Fragment() {
                 showIncorrectFieldTextError(mUserRequest!!)
             } else {
                 val titles: ArrayList<String> = ArrayList()
-                val pageIds: ArrayList<String> = ArrayList()
+                val descriptions: ArrayList<String> = ArrayList()
+                val ids: ArrayList<String> = ArrayList()
 
                 for (article in articles) {
                     titles.add(article.title)
-                    // TODO: improve this param (show description instead of page ID)
-                    pageIds.add(article.description)
+                    descriptions.add(article.description)
+                    ids.add(article.pageId)
                 }
 
                 // init recycler
                 val layoutManager = GridLayoutManager(context, 1)
-                val adapter = ArticlesListAdapter(titles, pageIds)
+                val adapter = ArticlesListAdapter(titles, descriptions, ids)
                 val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
-                // Show list of articles on display (recycler)
+                // Show list of articles on display (recycler: title and brief description)
                 recyclerView.setHasFixedSize(true)
                 recyclerView.layoutManager = layoutManager
                 recyclerView.adapter = adapter
                 val itemDecoration = DividerItemDecoration(recyclerView.context, layoutManager.orientation)
-                itemDecoration.setDrawable(getDrawable(recyclerView.context,R.drawable.recicle_view_divider)!!)
+                itemDecoration.setDrawable(getDrawable(recyclerView.context,R.drawable.recycle_view_divider)!!)
                 recyclerView.addItemDecoration(itemDecoration)
 
                 recyclerView.addOnItemTouchListener(
@@ -104,7 +108,7 @@ class SearchFragment : Fragment() {
                             override fun onItemClick(view: View, position: Int) {
                                 findNavController().navigate(
                                     SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                        pageIds[position],
+                                        ids[position],
                                         Locale.getDefault().language
                                     )
                                 )
@@ -113,7 +117,7 @@ class SearchFragment : Fragment() {
                             override fun onItemLongClick(view: View, position: Int) {
                                 findNavController().navigate(
                                     SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                        pageIds[position],
+                                        ids[position],
                                         Locale.getDefault().language
                                     )
                                 )
@@ -132,7 +136,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun showEmptyFieldError(textField: EditText) {
-        val errorMessage = "This field cannot be empty"
+        val errorMessage = getString(R.string.empty_field_error)
         textField.error = errorMessage
         // mUserRequest!!.setTextColor(resources.getColor(R.color.some_color, theme))
         textField.requestFocus()
@@ -147,16 +151,15 @@ class SearchFragment : Fragment() {
     }
 
     private fun showIncorrectFieldTextError(textField: EditText) {
-        val errorMessage = "Incorrect request. Nothing found"
+        val errorMessage = getString(R.string.incorrect_request_error)
         textField.error = errorMessage
         // mUserRequest!!.setTextColor(resources.getColor(R.color.some_color, theme))
         textField.requestFocus()
     }
 
     private fun showNoConnectionError() {
-        val text = "No internet, check your connection"
+        val text = getString(R.string.internet_connection_error)
         val duration = Toast.LENGTH_SHORT
-
         val toast = Toast.makeText(requireContext(), text, duration)
         toast.show()
     }
