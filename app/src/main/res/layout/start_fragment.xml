@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2021 Alex Syrnikov <pioneer19@post.cz>
   ~ SPDX-License-Identifier: Apache-2.0
   -->
@@ -15,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Settings"
+        android:text="@string/settings"
         app:layout_constraintBottom_toTopOf="@+id/goToSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Search"
+        android:text="@string/search"
         app:layout_constraintBottom_toTopOf="@+id/goToArticle"
         app:layout_constraintEnd_toEndOf="@+id/goToSettings"
         app:layout_constraintHorizontal_bias="0.461"
@@ -38,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Article"
+        android:text="@string/saved_articles"
         app:layout_constraintEnd_toEndOf="@+id/goToSearch"
         app:layout_constraintStart_toStartOf="@+id/goToSearch"
         app:layout_constraintTop_toBottomOf="@+id/goToSearch" />

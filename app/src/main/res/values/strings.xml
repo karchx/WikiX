@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Wiki</string>
+    <string name="app_name" translatable="false">Wiki</string>
+    <string name="settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="saved_articles">Saved articles</string>
+    <string name="empty_field_error">This field cannot me empty</string>
+    <string name="incorrect_request_error">Incorrect request. Nothing found</string>
+    <string name="internet_connection_error">No internet, check your connection</string>
 </resources>
