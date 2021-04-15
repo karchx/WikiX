@@ -19,8 +19,7 @@ class ArticlesListAdapter(
 ) : RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.search_article_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_article_item, parent, false)
         return ArticlesViewHolder(view)
     }
 

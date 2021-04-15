@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package github.karchx.wiki
+package github.karchx.wiki.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
+import github.karchx.wiki.R
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
