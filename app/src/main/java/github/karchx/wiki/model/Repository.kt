@@ -16,20 +16,20 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val appDao: AppDao
 ) {
-    suspend fun fetchArticlePage( liveData: MutableLiveData<ArticlePage>, pageUrl: String ) {
+    suspend fun fetchArticlePage( pageUrl: String ) : ArticlePage? {
         try {
             val body = NetUtils.fetchAsync(pageUrl).asString()
-            body ?: return
+            body ?: return null
 
             val json = JSONObject( body ).getJSONObject( "parse" )
-            val articlePage = ArticlePage(
+            return ArticlePage(
                     json.getInt("pageid")
-                            ,json.getString("title")
-                            ,json.getJSONObject("text").getString("*") )
-            liveData.value = articlePage
+                    ,json.getString("title")
+                    ,json.getJSONObject("text").getString("*") )
         } catch ( ex : Exception )
         {
             Log.i( "fetchArticlePage", "error: ${ex.message}" )
         }
+        return null
     }
 }
