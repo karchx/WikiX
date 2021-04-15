@@ -5,4 +5,4 @@
 
 package github.karchx.wiki.tools.search_engine
 
-data class ArticleItem(val title: String, val pageId: String, val snippet: String)
+data class ArticleItem(val title: String, val pageId: String, val description: String)
