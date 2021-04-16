@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_in_wikipedia"
+        android:layout_margin="14dp"
         app:boxBackgroundColor="@color/primaryItemBackground"
         app:layout_constraintBottom_toTopOf="@+id/searchButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +23,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextUserRequest"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:maxLength="100"
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -30,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/find_button"
+        android:layout_margin="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -42,7 +46,23 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewUserRequest"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        style="@style/TextViewHeader"
+        android:id="@+id/textViewUserRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stub"
+        android:visibility="invisible"
+        android:layout_margin="14dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
