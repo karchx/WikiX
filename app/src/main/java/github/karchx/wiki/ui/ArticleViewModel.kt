@@ -25,8 +25,7 @@ class ArticleViewModel @Inject constructor(
         viewModelScope.launch {
             val articlePage = repository.fetchArticlePage( pageUrl )
             if( articlePage != null ) {
-                val pageStyle =
-                        "<link rel=\"stylesheet\" href=\"/w/load.php?lang=en&amp;modules=ext.cite.styles%7Cext.wikimediaBadges%7Cmediawiki.hlist%7Cmediawiki.ui.button%2Cicon%7Cmobile.init.styles%7Cskins.minerva.base.styles%7Cskins.minerva.content.styles%7Cskins.minerva.content.styles.images%7Cskins.minerva.icons.wikimedia%7Cskins.minerva.mainMenu.icons%2Cstyles&amp;only=styles&amp;skin=minerva\"/>\n"
+                val pageStyle = "<link rel=\"stylesheet\" href=\"/w/load.php?lang=en&amp;modules=ext.cite.styles%7Cext.wikimediaBadges%7Cmediawiki.hlist%7Cmediawiki.ui.button%2Cicon%7Cmobile.init.styles%7Cskins.minerva.base.styles%7Cskins.minerva.content.styles%7Cskins.minerva.content.styles.images%7Cskins.minerva.icons.wikimedia%7Cskins.minerva.mainMenu.icons%2Cstyles&amp;only=styles&amp;skin=minerva\"/>\n"
                 articlePage.text = pageStyle + articlePage.text
                 _articlePage.value = articlePage!!
             }
