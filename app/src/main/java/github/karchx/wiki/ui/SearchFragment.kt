@@ -5,10 +5,12 @@
 
 package github.karchx.wiki.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -18,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
@@ -38,6 +41,7 @@ class SearchFragment : Fragment() {
     private val engine = SearchEngine()
     private var mSearchBtn: Button? = null
     private var mUserRequest: EditText? = null
+    private var mSearchField: TextInputLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +49,15 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         mSearchBtn = binding.searchButton
+        mSearchField = binding.textInputLayoutUserRequest
 
         mSearchBtn!!.setOnClickListener {
             mUserRequest = binding.editTextUserRequest
+
+            // Hide all views (only recycler on the screen) for comfortable articles viewing
+            hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+            requireView().hideKeyboard()
+
             val userRequest = mUserRequest!!.text.toString()
             if (!isEmptyField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
@@ -162,5 +172,20 @@ class SearchFragment : Fragment() {
         val duration = Toast.LENGTH_SHORT
         val toast = Toast.makeText(requireContext(), text, duration)
         toast.show()
+    }
+
+    private fun hideView(vararg views: View) {
+        for (view in views) {
+            view.visibility = if (requireView().visibility == View.VISIBLE){
+                View.INVISIBLE
+            } else{
+                View.VISIBLE
+            }
+        }
+    }
+
+    private fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 }
