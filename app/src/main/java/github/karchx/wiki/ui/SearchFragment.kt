@@ -10,14 +10,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
@@ -102,13 +102,14 @@ class SearchFragment : Fragment() {
                 val adapter = ArticlesListAdapter(titles, descriptions, ids)
                 val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
+                val animId: Int = R.anim.recycler_animation
+                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), animId)
+
                 // Show list of articles on display (recycler: title and brief description)
                 recyclerView.setHasFixedSize(true)
                 recyclerView.layoutManager = layoutManager
                 recyclerView.adapter = adapter
-                val itemDecoration = DividerItemDecoration(recyclerView.context, layoutManager.orientation)
-                itemDecoration.setDrawable(getDrawable(recyclerView.context,R.drawable.recycle_view_divider)!!)
-                recyclerView.addItemDecoration(itemDecoration)
+                recyclerView.layoutAnimation = animation
 
                 recyclerView.addOnItemTouchListener(
                     ArticleItemClickListener(
