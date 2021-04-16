@@ -8,6 +8,7 @@ package github.karchx.wiki.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -17,6 +18,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -50,8 +52,11 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
+        (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar!!.setDisplayShowHomeEnabled(true)
 
         mSearchBtn!!.setOnClickListener {
             mUserRequest = binding.editTextUserRequest
@@ -66,7 +71,12 @@ class SearchFragment : Fragment() {
                             hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
                             mRequestText!!.text = buildFoundContentMessage(userRequest)
                             showView(mRequestText!!)
-                            mRequestText!!.startAnimation(AnimationUtils.loadAnimation(requireContext(), android.R.anim.fade_in))
+                            mRequestText!!.startAnimation(
+                                AnimationUtils.loadAnimation(
+                                    requireContext(),
+                                    android.R.anim.fade_in
+                                )
+                            )
                             requireView().hideKeyboard()
                         }
 
@@ -111,7 +121,10 @@ class SearchFragment : Fragment() {
                 val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
                 val animId: Int = R.anim.layout_animation
-                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), animId)
+                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
+                    requireContext(),
+                    animId
+                )
 
                 // Show list of articles on display (recycler: title and brief description)
                 recyclerView.setHasFixedSize(true)
@@ -224,5 +237,17 @@ class SearchFragment : Fragment() {
         message += userRequest
 
         return message
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle arrow click
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
