@@ -15,6 +15,7 @@ import android.view.animation.LayoutAnimationController
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -38,18 +39,19 @@ class SearchFragment : Fragment() {
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val engine = SearchEngine()
+    private var mRequestText: TextView? = null
     private var mSearchBtn: Button? = null
     private var mUserRequest: EditText? = null
     private var mSearchField: TextInputLayout? = null
+    private var mArticlesRecycler: RecyclerView? = null
+    private var engine: SearchEngine? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
-        mSearchBtn = binding.searchButton
-        mSearchField = binding.textInputLayoutUserRequest
+        initRes()
 
         mSearchBtn!!.setOnClickListener {
             mUserRequest = binding.editTextUserRequest
@@ -62,6 +64,8 @@ class SearchFragment : Fragment() {
                         // Hide all views (only recycler on the screen) for comfortable articles viewing
                         requireActivity().runOnUiThread {
                             hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                            mRequestText!!.text = userRequest
+                            showView(mRequestText!!)
                             requireView().hideKeyboard()
                         }
 
@@ -100,7 +104,7 @@ class SearchFragment : Fragment() {
                     ids.add(article.pageId)
                 }
 
-                // init recycler
+                // init recycler params
                 val layoutManager = GridLayoutManager(context, 1)
                 val adapter = ArticlesListAdapter(titles, descriptions, ids)
                 val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
@@ -143,10 +147,9 @@ class SearchFragment : Fragment() {
 
     private fun getArticles(request: String): ArrayList<ArticleItem> {
         // Param `request` -- user's request (in search textInput field)
-        val url = engine.formUrl(Locale.getDefault().language, request)
-        val engine = SearchEngine()
-        val content = engine.getPagesIds(url)!!
-        return engine.getPagesInfo(content)
+        val url = engine!!.formUrl(Locale.getDefault().language, request)
+        val content = engine!!.getPagesIds(url)!!
+        return engine!!.getPagesInfo(content)
     }
 
     private fun showEmptyFieldError(textField: EditText) {
@@ -180,16 +183,26 @@ class SearchFragment : Fragment() {
 
     private fun hideView(vararg views: View) {
         for (view in views) {
-            view.visibility = if (requireView().visibility == View.VISIBLE){
-                View.INVISIBLE
-            } else{
-                View.VISIBLE
-            }
+            view.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun showView(vararg views: View) {
+        for (view in views) {
+            view.visibility = View.VISIBLE
         }
     }
 
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private fun initRes() {
+        mRequestText = binding.textViewUserRequest
+        mSearchBtn = binding.searchButton
+        mSearchField = binding.textInputLayoutUserRequest
+        mArticlesRecycler = binding.recyclerViewArticlesList
+        engine = SearchEngine()
     }
 }
