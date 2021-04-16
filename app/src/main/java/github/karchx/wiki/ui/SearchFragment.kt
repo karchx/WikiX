@@ -64,8 +64,9 @@ class SearchFragment : Fragment() {
                         // Hide all views (only recycler on the screen) for comfortable articles viewing
                         requireActivity().runOnUiThread {
                             hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
-                            mRequestText!!.text = userRequest
+                            mRequestText!!.text = buildFoundContentMessage(userRequest)
                             showView(mRequestText!!)
+                            mRequestText!!.startAnimation(AnimationUtils.loadAnimation(requireContext(), android.R.anim.fade_in))
                             requireView().hideKeyboard()
                         }
 
@@ -109,7 +110,7 @@ class SearchFragment : Fragment() {
                 val adapter = ArticlesListAdapter(titles, descriptions, ids)
                 val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
-                val animId: Int = R.anim.recycler_animation
+                val animId: Int = R.anim.layout_animation
                 val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(requireContext(), animId)
 
                 // Show list of articles on display (recycler: title and brief description)
@@ -204,5 +205,24 @@ class SearchFragment : Fragment() {
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
         engine = SearchEngine()
+    }
+
+    private fun buildFoundContentMessage(userRequest: String): String {
+        val lang = Locale.getDefault().language // en/ru/other language in this format
+
+        var message: String = when {
+            lang.equals("en") -> {
+                "Found on request:\n"
+            }
+            lang.equals("ru") -> {
+                "Найдено по запросу:\n"
+            }
+            else -> {
+                "Found on request:\n"
+            }
+        }
+        message += userRequest
+
+        return message
     }
 }
