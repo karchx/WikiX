@@ -54,16 +54,19 @@ class SearchFragment : Fragment() {
         mSearchBtn!!.setOnClickListener {
             mUserRequest = binding.editTextUserRequest
 
-            // Hide all views (only recycler on the screen) for comfortable articles viewing
-            hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
-            requireView().hideKeyboard()
-
             val userRequest = mUserRequest!!.text.toString()
             if (!isEmptyField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
                     // null here returns if in getArticles() was internet connection error
                     if (!getArticles(userRequest).equals(null)) {
+                        // Hide all views (only recycler on the screen) for comfortable articles viewing
+                        requireActivity().runOnUiThread {
+                            hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                            requireView().hideKeyboard()
+                        }
+
                         showAndCache(getArticles(userRequest))
+
                     } else {
                         // Handle here internet connection error;
                         // display toast with description in UI thread
