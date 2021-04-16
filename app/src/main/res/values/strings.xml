@@ -7,5 +7,5 @@
     <string name="incorrect_request_error">Incorrect request. Nothing found</string>
     <string name="internet_connection_error">No internet, check your connection</string>
     <string name="search_in_wikipedia">Search in Wikipedia</string>
-    <string name="find_button">Find</string>
+    <string name="find_button">Search</string>
 </resources>
