@@ -10,4 +10,6 @@
 
   <color name="primaryWhite">#ffffff</color>
   <color name="secondaryWhite">#f2f2f2</color>
+
+  <color name="grey">#5A5A5A</color>
 </resources>
