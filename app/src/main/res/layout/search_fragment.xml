@@ -2,7 +2,7 @@
 <!--
   ~ Copyright 2021 Andrey Karchevsky <karch.andrus@gmail.com>
   ~ SPDX-License-Identifier: Apache-2.0
- -->
+  -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:boxBackgroundColor="@color/primaryItemBackground"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -28,7 +29,7 @@
 
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/find_button"
         app:layout_constraintEnd_toEndOf="parent"
