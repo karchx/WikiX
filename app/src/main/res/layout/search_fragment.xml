@@ -18,7 +18,8 @@
         app:boxBackgroundColor="@color/primaryItemBackground"
         app:layout_constraintBottom_toTopOf="@+id/searchButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:startIconDrawable="@drawable/search_icon_dark">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextUserRequest"
