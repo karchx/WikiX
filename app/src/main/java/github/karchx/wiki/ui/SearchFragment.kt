@@ -13,10 +13,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -42,6 +39,7 @@ class SearchFragment : Fragment() {
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private var mProgressBar: ProgressBar? = null
     private var mRequestText: TextView? = null
     private var mSearchBtn: Button? = null
     private var mReloadFragmentFab: FloatingActionButton? = null
@@ -82,14 +80,17 @@ class SearchFragment : Fragment() {
 
                         }
                         foundAnyPages(getArticles(userRequest)) == false -> {
-                            requireActivity().runOnUiThread { showIncorrectFieldTextError(
-                                mUserRequest!!
-                            ) }
+                            requireActivity().runOnUiThread {
+                                showIncorrectFieldTextError(
+                                    mUserRequest!!
+                                )
+                            }
                         }
                         else -> {
                             // Hide all views (only recycler on the screen) for comfortable articles viewing
                             requireActivity().runOnUiThread {
                                 hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                                showView(mProgressBar!!)
                                 mRequestText!!.text = buildFoundContentMessage(userRequest)
                                 showView(mRequestText!!, mReloadFragmentFab!!)
                                 mRequestText!!.startAnimation(
@@ -102,7 +103,9 @@ class SearchFragment : Fragment() {
                             }
 
                             showAndCache(getArticles(userRequest)!!)
-
+                            requireActivity().runOnUiThread {
+                                hideView(mProgressBar!!)
+                            }
                         }
                     }
                 }
@@ -133,8 +136,8 @@ class SearchFragment : Fragment() {
             // init recycler params
             val layoutManager = GridLayoutManager(context, 1)
             val adapter = ArticlesListAdapter(titles, descriptions, ids)
-            val recyclerView =
-                requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+            val recyclerView = requireActivity().
+            findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
             val animId: Int = R.anim.layout_animation
             val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
@@ -257,6 +260,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun initRes() {
+        mProgressBar = binding.progressBar
         mRequestText = binding.textViewUserRequest
         mSearchBtn = binding.searchButton
         mReloadFragmentFab = binding.fabReloadFragment
