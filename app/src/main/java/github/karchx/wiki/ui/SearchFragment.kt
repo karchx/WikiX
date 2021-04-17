@@ -8,7 +8,6 @@ package github.karchx.wiki.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -18,7 +17,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -62,29 +60,32 @@ class SearchFragment : Fragment() {
             val userRequest = mUserRequest!!.text.toString()
             if (!isEmptyField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
-                    // null here returns if in getArticles() was internet connection error
-                    if (!getArticles(userRequest).equals(null)) {
-                        // Hide all views (only recycler on the screen) for comfortable articles viewing
-                        requireActivity().runOnUiThread {
-                            hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
-                            mRequestText!!.text = buildFoundContentMessage(userRequest)
-                            showView(mRequestText!!)
-                            mRequestText!!.startAnimation(
-                                AnimationUtils.loadAnimation(
-                                    requireContext(),
-                                    android.R.anim.fade_in
-                                )
-                            )
-                            requireView().hideKeyboard()
+
+                    when {
+                        foundAnyPages(getArticles(userRequest)) == null -> {
+                            requireActivity().runOnUiThread { showNoConnectionError() }
+
                         }
+                        foundAnyPages(getArticles(userRequest)) == false -> {
+                            requireActivity().runOnUiThread { showIncorrectFieldTextError(mUserRequest!!) }
+                        }
+                        else -> {
+                            // Hide all views (only recycler on the screen) for comfortable articles viewing
+                            requireActivity().runOnUiThread {
+                                hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                                mRequestText!!.text = buildFoundContentMessage(userRequest)
+                                showView(mRequestText!!)
+                                mRequestText!!.startAnimation(
+                                    AnimationUtils.loadAnimation(
+                                        requireContext(),
+                                        android.R.anim.fade_in
+                                    )
+                                )
+                                requireView().hideKeyboard()
+                            }
 
-                        showAndCache(getArticles(userRequest))
+                            showAndCache(getArticles(userRequest)!!)
 
-                    } else {
-                        // Handle here internet connection error;
-                        // display toast with description in UI thread
-                        requireActivity().runOnUiThread {
-                            showNoConnectionError()
                         }
                     }
                 }
@@ -100,64 +101,63 @@ class SearchFragment : Fragment() {
 
     private suspend fun showAndCache(articles: ArrayList<ArticleItem>) =
         withContext(Dispatchers.Main) {
-            if (!foundAnyPages(articles)) {
-                showIncorrectFieldTextError(mUserRequest!!)
-            } else {
-                val titles: ArrayList<String> = ArrayList()
-                val descriptions: ArrayList<String> = ArrayList()
-                val ids: ArrayList<String> = ArrayList()
 
-                for (article in articles) {
-                    titles.add(article.title)
-                    descriptions.add(article.description)
-                    ids.add(article.pageId)
-                }
 
-                // init recycler params
-                val layoutManager = GridLayoutManager(context, 1)
-                val adapter = ArticlesListAdapter(titles, descriptions, ids)
-                val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+            val titles: ArrayList<String> = ArrayList()
+            val descriptions: ArrayList<String> = ArrayList()
+            val ids: ArrayList<String> = ArrayList()
 
-                val animId: Int = R.anim.layout_animation
-                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
-                    requireContext(),
-                    animId
-                )
-
-                // Show list of articles on display (recycler: title and brief description)
-                recyclerView.setHasFixedSize(true)
-                recyclerView.layoutManager = layoutManager
-                recyclerView.adapter = adapter
-                recyclerView.layoutAnimation = animation
-
-                recyclerView.addOnItemTouchListener(
-                    ArticleItemClickListener(
-                        requireContext(),
-                        recyclerView,
-                        object : ArticleItemClickListener.OnItemClickListener {
-                            override fun onItemClick(view: View, position: Int) {
-                                findNavController().navigate(
-                                    SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                        ids[position],
-                                        Locale.getDefault().language
-                                    )
-                                )
-                            }
-
-                            override fun onItemLongClick(view: View, position: Int) {
-                                findNavController().navigate(
-                                    SearchFragmentDirections.actionSearchFragmentToArticleFragment(
-                                        ids[position],
-                                        Locale.getDefault().language
-                                    )
-                                )
-                            }
-                        })
-                )
+            for (article in articles) {
+                titles.add(article.title)
+                descriptions.add(article.description)
+                ids.add(article.pageId)
             }
+
+            // init recycler params
+            val layoutManager = GridLayoutManager(context, 1)
+            val adapter = ArticlesListAdapter(titles, descriptions, ids)
+            val recyclerView =
+                requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+
+            val animId: Int = R.anim.layout_animation
+            val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
+                requireContext(),
+                animId
+            )
+
+            // Show list of articles on display (recycler: title and brief description)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = adapter
+            recyclerView.layoutAnimation = animation
+
+            recyclerView.addOnItemTouchListener(
+                ArticleItemClickListener(
+                    requireContext(),
+                    recyclerView,
+                    object : ArticleItemClickListener.OnItemClickListener {
+                        override fun onItemClick(view: View, position: Int) {
+                            findNavController().navigate(
+                                SearchFragmentDirections.actionSearchFragmentToArticleFragment(
+                                    ids[position],
+                                    Locale.getDefault().language
+                                )
+                            )
+                        }
+
+                        override fun onItemLongClick(view: View, position: Int) {
+                            findNavController().navigate(
+                                SearchFragmentDirections.actionSearchFragmentToArticleFragment(
+                                    ids[position],
+                                    Locale.getDefault().language
+                                )
+                            )
+                        }
+                    })
+            )
         }
 
-    private fun getArticles(request: String): ArrayList<ArticleItem> {
+    private fun getArticles(request: String): ArrayList<ArticleItem>? {
         // Param `request` -- user's request (in search textInput field)
         val url = engine!!.formUrl(Locale.getDefault().language, request)
         val content = engine!!.getPagesIds(url)!!
@@ -175,8 +175,18 @@ class SearchFragment : Fragment() {
         return fieldContent.trim { it <= ' ' }.isEmpty()
     }
 
-    private fun foundAnyPages(content: ArrayList<ArticleItem>): Boolean {
-        return content.isNotEmpty()
+    private fun foundAnyPages(content: ArrayList<ArticleItem>?): Boolean? {
+        if (content == null) {
+            // if error while founding
+            return null
+        }
+
+        // If nothing found
+        else if (content.isEmpty()) {
+            return false
+        }
+        // If content found
+        return true
     }
 
     private fun showIncorrectFieldTextError(textField: EditText) {
