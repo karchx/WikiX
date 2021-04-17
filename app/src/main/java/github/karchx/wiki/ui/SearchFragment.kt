@@ -55,8 +55,6 @@ class SearchFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
-        (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar!!.setDisplayShowHomeEnabled(true)
 
         mSearchBtn!!.setOnClickListener {
             mUserRequest = binding.editTextUserRequest
@@ -237,17 +235,5 @@ class SearchFragment : Fragment() {
         message += userRequest.capitalize(Locale.ROOT)
 
         return message
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle arrow click
-        when (item.itemId) {
-            android.R.id.home -> {
-                activity?.onBackPressed()
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 }
