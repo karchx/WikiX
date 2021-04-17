@@ -212,7 +212,6 @@ class SearchFragment : Fragment() {
     private fun showIncorrectFieldTextError(textField: EditText) {
         val errorMessage = getString(R.string.incorrect_request_error)
         textField.error = errorMessage
-        // mUserRequest!!.setTextColor(resources.getColor(R.color.some_color, theme))
         textField.requestFocus()
     }
 
