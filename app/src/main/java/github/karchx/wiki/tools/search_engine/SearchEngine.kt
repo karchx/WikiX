@@ -32,11 +32,11 @@ class SearchEngine {
         return content
     }
 
-    fun getPagesInfo(content: String): ArrayList<ArticleItem> {
+    fun getPagesInfo(content: String): ArrayList<ArticleItem>? {
         return if (content.isNotEmpty()) {
             formatter.listOfPages(content)
         } else {
-            ArrayList()
+            null
         }
     }
 
