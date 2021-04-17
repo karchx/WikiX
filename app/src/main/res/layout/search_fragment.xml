@@ -13,8 +13,8 @@
         android:id="@+id/textInputLayoutUserRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/search_in_wikipedia"
         android:layout_margin="14dp"
+        android:hint="@string/search_in_wikipedia"
         app:boxBackgroundColor="@color/primaryItemBackground"
         app:layout_constraintBottom_toTopOf="@+id/searchButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,8 +32,8 @@
         android:id="@+id/searchButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/find_button"
         android:layout_margin="14dp"
+        android:text="@string/find_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -52,17 +52,35 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        style="@style/TextViewHeader"
         android:id="@+id/textViewUserRequest"
+        style="@style/TextViewHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="14dp"
         android:text="Stub"
         android:visibility="invisible"
-        android:layout_margin="14dp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabReloadFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:contentDescription="Search"
+
+        android:focusable="true"
+        android:src="@drawable/search_icon"
+        android:visibility="invisible"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="48dp"
         tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

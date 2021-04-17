@@ -18,9 +18,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
@@ -33,6 +35,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
+
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
@@ -41,6 +44,7 @@ class SearchFragment : Fragment() {
 
     private var mRequestText: TextView? = null
     private var mSearchBtn: Button? = null
+    private var mReloadFragmentFab: FloatingActionButton? = null
     private var mUserRequest: EditText? = null
     private var mSearchField: TextInputLayout? = null
     private var mArticlesRecycler: RecyclerView? = null
@@ -53,6 +57,17 @@ class SearchFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
+
+        mReloadFragmentFab!!.setOnClickListener {
+            // Full fragment recreating
+            findNavController().navigate(
+                R.id.searchFragment,
+                arguments,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.searchFragment, true)
+                    .build()
+            )
+        }
 
         mSearchBtn!!.setOnClickListener {
             mUserRequest = binding.editTextUserRequest
@@ -67,14 +82,16 @@ class SearchFragment : Fragment() {
 
                         }
                         foundAnyPages(getArticles(userRequest)) == false -> {
-                            requireActivity().runOnUiThread { showIncorrectFieldTextError(mUserRequest!!) }
+                            requireActivity().runOnUiThread { showIncorrectFieldTextError(
+                                mUserRequest!!
+                            ) }
                         }
                         else -> {
                             // Hide all views (only recycler on the screen) for comfortable articles viewing
                             requireActivity().runOnUiThread {
                                 hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
                                 mRequestText!!.text = buildFoundContentMessage(userRequest)
-                                showView(mRequestText!!)
+                                showView(mRequestText!!, mReloadFragmentFab!!)
                                 mRequestText!!.startAnimation(
                                     AnimationUtils.loadAnimation(
                                         requireContext(),
@@ -220,14 +237,6 @@ class SearchFragment : Fragment() {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private fun initRes() {
-        mRequestText = binding.textViewUserRequest
-        mSearchBtn = binding.searchButton
-        mSearchField = binding.textInputLayoutUserRequest
-        mArticlesRecycler = binding.recyclerViewArticlesList
-        engine = SearchEngine()
-    }
-
     private fun buildFoundContentMessage(userRequest: String): String {
         val lang = Locale.getDefault().language // en/ru/other language in this format
 
@@ -245,5 +254,14 @@ class SearchFragment : Fragment() {
         message += userRequest.capitalize(Locale.ROOT)
 
         return message
+    }
+
+    private fun initRes() {
+        mRequestText = binding.textViewUserRequest
+        mSearchBtn = binding.searchButton
+        mReloadFragmentFab = binding.fabReloadFragment
+        mSearchField = binding.textInputLayoutUserRequest
+        mArticlesRecycler = binding.recyclerViewArticlesList
+        engine = SearchEngine()
     }
 }
