@@ -5,7 +5,7 @@
 
 package github.karchx.wiki.tools.search_engine
 
-import android.util.Log
+import org.json.JSONException
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 
@@ -18,19 +18,25 @@ class JsonFormatter {
         val pagesData: ArrayList<ArticleItem> = arrayListOf()
 
         val jsonStr = unicodeFormatter.decode(jsonInp)
-        val obj = JSONObject(jsonStr).getJSONObject("query")
-        val arrOfPages = obj.getJSONArray("search")
+        try {
+            val obj = JSONObject(jsonStr).getJSONObject("query")
+            val arrOfPages = obj.getJSONArray("search")
+            // get Pages info (will be shown in recycler)
+            for (i in 0 until arrOfPages.length()) {
+                val pageTitle = arrOfPages.getJSONObject(i).getString("title")
+                val pageId = arrOfPages.getJSONObject(i).getString("pageid")
+                val pageSnippet = arrOfPages.getJSONObject(i).getString("snippet")
+                val description = htmlFormatter.html2str(pageSnippet)
 
-        // get Pages info (will be shown in recycler)
-        for (i in 0 until arrOfPages.length()) {
-            val pageTitle = arrOfPages.getJSONObject(i).getString("title")
-            val pageId = arrOfPages.getJSONObject(i).getString("pageid")
-            val pageSnippet = arrOfPages.getJSONObject(i).getString("snippet")
-            val description = htmlFormatter.html2str(pageSnippet)
+                pagesData.add(ArticleItem(pageTitle, pageId, description))
+            }
 
-            pagesData.add(ArticleItem(pageTitle, pageId, description))
+            return pagesData
         }
 
-        return pagesData
+        // Error by wiki API catches here
+        catch (ex: JSONException) {
+            return ArrayList()
+        }
     }
 }
