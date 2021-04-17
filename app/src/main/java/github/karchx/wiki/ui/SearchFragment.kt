@@ -234,7 +234,7 @@ class SearchFragment : Fragment() {
                 "Found on request:\n"
             }
         }
-        message += userRequest
+        message += userRequest.capitalize(Locale.ROOT)
 
         return message
     }
