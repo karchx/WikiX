@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.searchFragment)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.settings_page -> {
+            R.id.settingsPage -> {
                 val navController = findNavController(R.id.nav_host_fragment)
                 navController.navigate(R.id.settingsFragment)
                 return@OnNavigationItemSelectedListener true
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.hide()
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigation.selectedItemId = R.id.searchPage
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 }
