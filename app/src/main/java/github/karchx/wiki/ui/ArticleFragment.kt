@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
@@ -33,6 +34,8 @@ class ArticleFragment : Fragment() {
     private val args: ArticleFragmentArgs by navArgs()
     private var mProgressBar: ProgressBar? = null
     private var mReloadFragmentFab: FloatingActionButton? = null
+    private var viewAnimIn: Animation? = null
+    private var viewAnimOut: Animation? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,8 +72,10 @@ class ArticleFragment : Fragment() {
 
         binding.articlePage.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
+                setAnimOut(mProgressBar!!)
                 mProgressBar!!.visibility = View.INVISIBLE
                 mReloadFragmentFab!!.visibility = View.VISIBLE
+                setAnimIn(mReloadFragmentFab!!)
             }
         }
     }
@@ -85,5 +90,17 @@ class ArticleFragment : Fragment() {
     private fun initRes() {
         mProgressBar = binding.progressBar
         mReloadFragmentFab = binding.fabReloadFragment
+    }
+
+    private fun setAnimOut(vararg views: View) {
+        for (view in views) {
+            view.animation = viewAnimOut
+        }
+    }
+
+    private fun setAnimIn(vararg views: View) {
+        for (view in views) {
+            view.animation = viewAnimIn
+        }
     }
 }
