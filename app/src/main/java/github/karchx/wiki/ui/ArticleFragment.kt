@@ -14,8 +14,12 @@ import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
+import github.karchx.wiki.R
 import github.karchx.wiki.databinding.ArticleFragmentBinding
 
 
@@ -28,6 +32,7 @@ class ArticleFragment : Fragment() {
     private val viewModel: ArticleViewModel by viewModels()
     private val args: ArticleFragmentArgs by navArgs()
     private var mProgressBar: ProgressBar? = null
+    private var mReloadFragmentFab: FloatingActionButton? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +45,17 @@ class ArticleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRes()
+
+        mReloadFragmentFab!!.setOnClickListener {
+            // Full fragment recreating
+            findNavController().navigate(
+                R.id.searchFragment,
+                arguments,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.searchFragment, true)
+                    .build()
+            )
+        }
 
         mProgressBar!!.visibility = View.VISIBLE
 
@@ -54,9 +70,11 @@ class ArticleFragment : Fragment() {
         binding.articlePage.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 mProgressBar!!.visibility = View.INVISIBLE
+                mReloadFragmentFab!!.visibility = View.VISIBLE
             }
         }
     }
+
     private fun articleJsonUrl(articleId: String, lang: String) : String {
         return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
     }
@@ -66,5 +84,6 @@ class ArticleFragment : Fragment() {
 
     private fun initRes() {
         mProgressBar = binding.progressBar
+        mReloadFragmentFab = binding.fabReloadFragment
     }
 }
