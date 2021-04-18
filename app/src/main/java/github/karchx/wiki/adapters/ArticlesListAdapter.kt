@@ -15,7 +15,7 @@ import github.karchx.wiki.R
 class ArticlesListAdapter(
     private val titles: ArrayList<String>,
     private val descriptions: ArrayList<String>,
-    private val pageIds: ArrayList<String>
+    private val pageIds: ArrayList<Long>
 ) : RecyclerView.Adapter<ArticlesListAdapter.ArticlesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
