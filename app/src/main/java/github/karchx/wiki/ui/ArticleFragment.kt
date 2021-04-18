@@ -63,12 +63,16 @@ class ArticleFragment : Fragment() {
         mProgressBar!!.visibility = View.VISIBLE
 
         viewModel.articlePage.observe(viewLifecycleOwner){ articlePage ->
-            binding.articlePage.loadDataWithBaseURL(
-                articleHtmlUrl(articlePage.title, args.lang),
-                articlePage.text, "text/html", null, null
-            )
+            if( args.articleId != null ) {
+                binding.articlePage.loadDataWithBaseURL(
+                    articleHtmlUrl(articlePage.title, args.lang!!),
+                    articlePage.text, "text/html", null, null
+                )
+            }
         }
-        viewModel.fetchJsonPage(articleJsonUrl(args.articleId, args.lang))
+        if( args.articleId != null ) {
+            viewModel.fetchJsonPage(articleJsonUrl(args.articleId!!, args.lang!!))
+        }
 
         binding.articlePage.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {

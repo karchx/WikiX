@@ -8,4 +8,5 @@
     <string name="internet_connection_error">Нет интернета, проверьте настройки сети</string>
     <string name="search_in_wikipedia">Поиск в Википедии</string>
     <string name="find_button">Поиск</string>
+    <string name="articles">Статьи</string>
 </resources>
