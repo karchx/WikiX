@@ -7,21 +7,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/startFragment">
+    app:startDestination="@id/searchFragment">
 
     <fragment
-        android:id="@+id/startFragment"
-        android:name="github.karchx.wiki.ui.StartFragment"
+        android:id="@+id/searchFragment"
+        android:name="github.karchx.wiki.ui.SearchFragment"
         android:label="start_fragment"
-        tools:layout="@layout/start_fragment">
+        tools:layout="@layout/search_fragment">
         <action
-            android:id="@+id/action_startFragment_to_settingsFragment"
+            android:id="@+id/action_searchFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
-            android:id="@+id/action_startFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
-            android:id="@+id/action_startFragment_to_articleFragment"
+            android:id="@+id/action_searchFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
     </fragment>
     <fragment
@@ -29,15 +26,6 @@
         android:name="github.karchx.wiki.ui.SettingsFragment"
         android:label="settings_fragment"
         tools:layout="@layout/settings_fragment" />
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="github.karchx.wiki.ui.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/search_fragment">
-        <action
-            android:id="@+id/action_searchFragment_to_articleFragment"
-            app:destination="@id/articleFragment" />
-    </fragment>
     <fragment
         android:id="@+id/articleFragment"
         android:name="github.karchx.wiki.ui.ArticleFragment"
