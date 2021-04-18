@@ -74,7 +74,6 @@
         android:layout_margin="16dp"
         android:clickable="true"
         android:contentDescription="Search"
-
         android:focusable="true"
         android:src="@drawable/search_icon"
         android:visibility="invisible"

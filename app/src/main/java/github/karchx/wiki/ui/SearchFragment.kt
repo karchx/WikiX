@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.view.inputmethod.InputMethodManager
@@ -47,6 +48,10 @@ class SearchFragment : Fragment() {
     private var mSearchField: TextInputLayout? = null
     private var mArticlesRecycler: RecyclerView? = null
     private var engine: SearchEngine? = null
+    private var viewAnimIn: Animation? = null
+    private var viewAnimOut: Animation? = null
+    private var recyclerAnim: LayoutAnimationController? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,17 +94,14 @@ class SearchFragment : Fragment() {
                         else -> {
                             // Hide all views (only recycler on the screen) for comfortable articles viewing
                             requireActivity().runOnUiThread {
-                                hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
-                                showView(mProgressBar!!)
-                                mRequestText!!.text = buildFoundContentMessage(userRequest)
-                                showView(mRequestText!!, mReloadFragmentFab!!)
-                                mRequestText!!.startAnimation(
-                                    AnimationUtils.loadAnimation(
-                                        requireContext(),
-                                        android.R.anim.fade_in
-                                    )
-                                )
                                 requireView().hideKeyboard()
+
+                                setAnimOut(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                                hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+
+                                mRequestText!!.text = buildFoundContentMessage(userRequest)
+                                setAnimIn(mProgressBar!!, mRequestText!!, mReloadFragmentFab!!)
+                                showView(mProgressBar!!, mRequestText!!, mReloadFragmentFab!!)
                             }
 
                             showAndCache(getArticles(userRequest)!!)
@@ -139,17 +141,11 @@ class SearchFragment : Fragment() {
             val recyclerView = requireActivity().
             findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
-            val animId: Int = R.anim.layout_animation
-            val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
-                requireContext(),
-                animId
-            )
-
             // Show list of articles on display (recycler: title and brief description)
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = adapter
-            recyclerView.layoutAnimation = animation
+            recyclerView.layoutAnimation = recyclerAnim
 
             recyclerView.addOnItemTouchListener(
                 ArticleItemClickListener(
@@ -258,7 +254,23 @@ class SearchFragment : Fragment() {
         return message
     }
 
+    private fun setAnimOut(vararg views: View) {
+        for (view in views) {
+            view.animation = viewAnimOut
+        }
+    }
+
+    private fun setAnimIn(vararg views: View) {
+        for (view in views) {
+            view.animation = viewAnimIn
+        }
+    }
+
     private fun initRes() {
+        viewAnimIn = AnimationUtils.loadAnimation(requireContext(), android.R.anim.fade_in)
+        viewAnimOut = AnimationUtils.loadAnimation(requireContext(), android.R.anim.fade_out)
+        recyclerAnim = AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation)
+
         mProgressBar = binding.progressBar
         mRequestText = binding.textViewUserRequest
         mSearchBtn = binding.searchButton
