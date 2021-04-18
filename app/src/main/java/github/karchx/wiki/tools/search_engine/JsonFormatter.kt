@@ -24,7 +24,7 @@ class JsonFormatter {
             // get Pages info (will be shown in recycler)
             for (i in 0 until arrOfPages.length()) {
                 val pageTitle = arrOfPages.getJSONObject(i).getString("title")
-                val pageId = arrOfPages.getJSONObject(i).getString("pageid")
+                val pageId = arrOfPages.getJSONObject(i).getLong("pageid")
                 val pageSnippet = arrOfPages.getJSONObject(i).getString("snippet")
                 val description = htmlFormatter.html2str(pageSnippet)
 

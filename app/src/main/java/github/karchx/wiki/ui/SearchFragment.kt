@@ -123,11 +123,9 @@ class SearchFragment : Fragment() {
 
     private suspend fun showAndCache(articles: ArrayList<ArticleItem>) =
         withContext(Dispatchers.Main) {
-
-
             val titles: ArrayList<String> = ArrayList()
             val descriptions: ArrayList<String> = ArrayList()
-            val ids: ArrayList<String> = ArrayList()
+            val ids: ArrayList<Long> = ArrayList()
 
             for (article in articles) {
                 titles.add(article.title)
