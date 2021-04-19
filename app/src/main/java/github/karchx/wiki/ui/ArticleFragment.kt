@@ -71,7 +71,7 @@ class ArticleFragment : Fragment() {
             }
         }
         if( args.articleId != 0L ) {
-            viewModel.fetchJsonPage(articleJsonUrl(args.articleId!!, args.lang!!))
+            viewModel.fetchJsonPage( args.articleId.toInt() )
         }
 
         binding.articlePage.webViewClient = object : WebViewClient() {
@@ -84,9 +84,6 @@ class ArticleFragment : Fragment() {
         }
     }
 
-    private fun articleJsonUrl(articleId: Long, lang: String) : String {
-        return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
-    }
     private fun articleHtmlUrl(articleTitle: String, lang: String) : String {
         return "https://${lang}.wikipedia.org/wiki/${articleTitle}"
     }
