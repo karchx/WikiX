@@ -10,9 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -29,6 +26,7 @@ import github.karchx.wiki.databinding.SearchFragmentBinding
 import github.karchx.wiki.listeners.ArticleItemClickListener
 import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
+import github.karchx.wiki.ui.helpers.CustomAnimations
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -48,9 +46,7 @@ class SearchFragment : Fragment() {
     private var mSearchField: TextInputLayout? = null
     private var mArticlesRecycler: RecyclerView? = null
     private var engine: SearchEngine? = null
-    private var viewAnimIn: Animation? = null
-    private var viewAnimOut: Animation? = null
-    private var recyclerAnim: LayoutAnimationController? = null
+    private var customAnims: CustomAnimations? = null
 
 
     override fun onCreateView(
@@ -62,6 +58,8 @@ class SearchFragment : Fragment() {
         initRes()
 
         mReloadFragmentFab!!.setOnClickListener {
+            customAnims!!.setClickAnim(mReloadFragmentFab!!)
+
             // Full fragment recreating
             findNavController().navigate(
                 R.id.searchFragment,
@@ -73,6 +71,8 @@ class SearchFragment : Fragment() {
         }
 
         mSearchBtn!!.setOnClickListener {
+            customAnims!!.setClickAnim(mSearchBtn!!)
+
             mUserRequest = binding.editTextUserRequest
 
             val userRequest = mUserRequest!!.text.toString()
@@ -96,11 +96,19 @@ class SearchFragment : Fragment() {
                             requireActivity().runOnUiThread {
                                 requireView().hideKeyboard()
 
-                                setAnimOut(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                                customAnims!!.setViewOutAnim(
+                                    mSearchBtn!!,
+                                    mSearchField!!,
+                                    mUserRequest!!
+                                )
                                 hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
 
                                 mRequestText!!.text = buildFoundContentMessage(userRequest)
-                                setAnimIn(mProgressBar!!, mRequestText!!, mReloadFragmentFab!!)
+                                customAnims!!.setViewInAnim(
+                                    mProgressBar!!,
+                                    mRequestText!!,
+                                    mReloadFragmentFab!!
+                                )
                                 showView(mProgressBar!!, mRequestText!!, mReloadFragmentFab!!)
                             }
 
@@ -136,14 +144,13 @@ class SearchFragment : Fragment() {
             // init recycler params
             val layoutManager = GridLayoutManager(context, 1)
             val adapter = ArticlesListAdapter(titles, descriptions, ids)
-            val recyclerView = requireActivity().
-            findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+            val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
             // Show list of articles on display (recycler: title and brief description)
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = layoutManager
             recyclerView.adapter = adapter
-            recyclerView.layoutAnimation = recyclerAnim
+            customAnims!!.setRecyclerAnim(recyclerView)
 
             recyclerView.addOnItemTouchListener(
                 ArticleItemClickListener(
@@ -151,6 +158,8 @@ class SearchFragment : Fragment() {
                     recyclerView,
                     object : ArticleItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
+                            customAnims!!.setClickAnim(view)
+
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
@@ -160,6 +169,8 @@ class SearchFragment : Fragment() {
                         }
 
                         override fun onItemLongClick(view: View, position: Int) {
+                            customAnims!!.setLongClickAnim(view)
+
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
@@ -252,22 +263,8 @@ class SearchFragment : Fragment() {
         return message
     }
 
-    private fun setAnimOut(vararg views: View) {
-        for (view in views) {
-            view.animation = viewAnimOut
-        }
-    }
-
-    private fun setAnimIn(vararg views: View) {
-        for (view in views) {
-            view.animation = viewAnimIn
-        }
-    }
-
     private fun initRes() {
-        viewAnimIn = AnimationUtils.loadAnimation(requireContext(), android.R.anim.fade_in)
-        viewAnimOut = AnimationUtils.loadAnimation(requireContext(), android.R.anim.fade_out)
-        recyclerAnim = AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation)
+        customAnims = CustomAnimations(requireContext())
 
         mProgressBar = binding.progressBar
         mRequestText = binding.textViewUserRequest
