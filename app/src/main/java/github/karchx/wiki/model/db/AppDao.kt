@@ -5,23 +5,23 @@
 
 package github.karchx.wiki.model.db
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppDao {
-    @Query("SELECT * FROM articles")
-    fun getAll(): List<Articles>
+    @Query("SELECT * FROM articles WHERE id = :articleId")
+    fun getArticle(articleId: Int): ArticleEntry?
 
-    @Query("SELECT * FROM articles WHERE aid = :articleId")
-    fun load(articleId: String): Flow<Articles>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertArticle( article: ArticleEntry )
 
-    @Insert
-    fun insertAll(vararg articles: Articles)
-
-    @Delete
-    fun delete(article: Articles)
+//    @Query("SELECT * FROM articles")
+//    fun getAll(): List<ArticleEntry>
+//
+//    @Query("SELECT * FROM articles WHERE id = :articleId")
+//    fun load(articleId: String): Flow<ArticleEntry>
+//
+//    @Delete
+//    fun delete(article: ArticleEntry)
 }

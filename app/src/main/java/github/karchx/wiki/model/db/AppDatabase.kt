@@ -8,7 +8,7 @@ package github.karchx.wiki.model.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [Articles::class], version = 1)
+@Database(entities = [ArticleEntry::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appDao(): AppDao
 }

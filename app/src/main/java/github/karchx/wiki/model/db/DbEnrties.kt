@@ -10,9 +10,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "articles")
-data class Articles(
-    @PrimaryKey val aid: Int,
-    @ColumnInfo(name = "url") val url: String?,
-    @ColumnInfo(name = "title") val title: String?,
-    @ColumnInfo(name = "description") val description: String?,
+data class ArticleEntry(
+    @PrimaryKey
+    val id: Int,
+    @ColumnInfo(name = "title")
+    val title: String,
+    @ColumnInfo(name = "description")
+    val text: String,
 )
