@@ -23,7 +23,6 @@ import github.karchx.wiki.R
 import github.karchx.wiki.databinding.ArticleFragmentBinding
 import github.karchx.wiki.ui.helpers.CustomAnimations
 
-
 @AndroidEntryPoint
 class ArticleFragment : Fragment() {
 
