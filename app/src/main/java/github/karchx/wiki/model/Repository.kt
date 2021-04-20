@@ -26,7 +26,6 @@ class Repository @Inject constructor(
         try {
             val articleEntry = appDao.getArticle( articleId )
             if ( articleEntry != null ) {
-                Log.i( "fetchArticlePage", "got article from Db" )
                 return@withContext ArticlePage(articleEntry.id, articleEntry.title, articleEntry.text)
             } else {
                 val pageUrl: String = articleJsonUrl(articleId, lang)
@@ -37,7 +36,6 @@ class Repository @Inject constructor(
                 val articlePage = ArticlePage(
                         json.getInt("pageid"), json.getString("title"), json.getJSONObject("text").getString("*"))
 
-                Log.i( "fetchArticlePage", "got article from Network" )
                 appDao.insertArticle(ArticleEntry(
                         articlePage.pageId, lang, articlePage.title, articlePage.text))
                 return@withContext articlePage
