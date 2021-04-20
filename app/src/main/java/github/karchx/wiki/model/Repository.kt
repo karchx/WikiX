@@ -18,10 +18,10 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val appDao: AppDao
 ) {
-    private fun articleJsonUrl(articleId: Int) : String {
-        return "https://wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
+    private fun articleJsonUrl(articleId: Int, lang: String) : String {
+        return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
     }
-    suspend fun fetchArticlePage( articleId: Int ) : ArticlePage?
+    suspend fun fetchArticlePage( articleId: Int, lang: String ) : ArticlePage?
             = withContext(Dispatchers.IO){
         try {
             val articleEntry = appDao.getArticle( articleId )
@@ -29,7 +29,7 @@ class Repository @Inject constructor(
                 Log.i( "fetchArticlePage", "got article from Db" )
                 return@withContext ArticlePage(articleEntry.id, articleEntry.title, articleEntry.text)
             } else {
-                val pageUrl: String = articleJsonUrl(articleId)
+                val pageUrl: String = articleJsonUrl(articleId, lang)
                 val body = NetUtils.fetchAsync(pageUrl).asString()
                 body ?: return@withContext null
 
@@ -39,7 +39,7 @@ class Repository @Inject constructor(
 
                 Log.i( "fetchArticlePage", "got article from Network" )
                 appDao.insertArticle(ArticleEntry(
-                        articlePage.pageId, articlePage.title, articlePage.text))
+                        articlePage.pageId, lang, articlePage.title, articlePage.text))
                 return@withContext articlePage
             }
         } catch ( ex : Exception )
