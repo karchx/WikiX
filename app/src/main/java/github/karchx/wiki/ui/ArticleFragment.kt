@@ -70,7 +70,7 @@ class ArticleFragment : Fragment() {
             }
         }
         if( args.articleId != 0L ) {
-            viewModel.fetchJsonPage( args.articleId.toInt() )
+            viewModel.fetchJsonPage( args.articleId.toInt(), args.lang!! )
         }
 
         binding.articlePage.webViewClient = object : WebViewClient() {
