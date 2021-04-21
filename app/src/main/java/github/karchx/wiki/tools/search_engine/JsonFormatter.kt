@@ -17,8 +17,8 @@ class JsonFormatter {
     fun listOfPages(jsonInp: String): ArrayList<ArticleItem> {
         val pagesData: ArrayList<ArticleItem> = arrayListOf()
 
-        val jsonStr = unicodeFormatter.decode(jsonInp)
         try {
+            val jsonStr = unicodeFormatter.decode(jsonInp)
             val obj = JSONObject(jsonStr).getJSONObject("query")
             val arrOfPages = obj.getJSONArray("search")
             // get Pages info (will be shown in recycler)
