@@ -10,10 +10,7 @@ import java.util.List;
 
 public class NewsEngine {
 
-    int tokenIndex;
-    public NewsEngine(int tokenIndex) {
-        this.tokenIndex = tokenIndex;
-    }
+    int tokenIndex = 0;
 
     TokenManager tokenManager = new TokenManager();
     NewsApiClient newsApiClient = new NewsApiClient(tokenManager.getToken(tokenIndex));
