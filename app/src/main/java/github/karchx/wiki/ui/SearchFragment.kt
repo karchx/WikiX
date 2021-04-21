@@ -24,6 +24,7 @@ import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
 import github.karchx.wiki.databinding.SearchFragmentBinding
 import github.karchx.wiki.listeners.ArticleItemClickListener
+import github.karchx.wiki.tools.news_engine.NewsEngine
 import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import github.karchx.wiki.ui.helpers.CustomAnimations
@@ -47,6 +48,7 @@ class SearchFragment : Fragment() {
     private var mArticlesRecycler: RecyclerView? = null
     private var engine: SearchEngine? = null
     private var customAnims: CustomAnimations? = null
+    private var newsEngine: NewsEngine? = null
 
 
     override fun onCreateView(
@@ -56,6 +58,8 @@ class SearchFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
+
+        newsEngine!!.getNews("ru")
 
         mReloadFragmentFab!!.setOnClickListener {
             customAnims!!.setClickAnim(mReloadFragmentFab!!)
@@ -273,5 +277,6 @@ class SearchFragment : Fragment() {
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
         engine = SearchEngine()
+        newsEngine = NewsEngine(0)
     }
 }

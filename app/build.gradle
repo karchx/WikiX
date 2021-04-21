@@ -54,7 +54,7 @@ dependencies {
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation 'androidx.fragment:fragment-ktx:1.3.2'
+    implementation 'androidx.fragment:fragment-ktx:1.3.3'
     // Feature module Support
     // implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     // Testing Navigation
@@ -83,4 +83,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     // Jsoup (Html parser)
     implementation 'org.jsoup:jsoup:1.13.1'
+    // News API
+    implementation 'com.github.KwabenBerko:News-API-Java:1.0.0'
 }
