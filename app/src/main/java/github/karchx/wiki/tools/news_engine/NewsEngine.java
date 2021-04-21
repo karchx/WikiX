@@ -15,8 +15,8 @@ public class NewsEngine {
     TokenManager tokenManager = new TokenManager();
     NewsApiClient newsApiClient = new NewsApiClient(tokenManager.getToken(tokenIndex));
 
-    public ArrayList<NewsArticle> getNews(String userLang) {
-        ArrayList<NewsArticle> newsArticles = new ArrayList<>();
+    public ArrayList<NewsArticleItem> getNews(String userLang) {
+        ArrayList<NewsArticleItem> newsArticles = new ArrayList<>();
 
         newsApiClient.getTopHeadlines(
                 new TopHeadlinesRequest.Builder()
@@ -27,7 +27,7 @@ public class NewsEngine {
                     public void onSuccess(ArticleResponse response) {
                         List<Article> responseArray = response.getArticles();
                         for (Article article : responseArray) {
-                            newsArticles.add(new NewsArticle(
+                            newsArticles.add(new NewsArticleItem(
                                     article.getTitle(),
                                     article.getDescription(),
                                     article.getPublishedAt(),
