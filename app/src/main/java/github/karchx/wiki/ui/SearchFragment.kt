@@ -277,6 +277,6 @@ class SearchFragment : Fragment() {
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
         engine = SearchEngine()
-        newsEngine = NewsEngine(0)
+        newsEngine = NewsEngine()
     }
 }
