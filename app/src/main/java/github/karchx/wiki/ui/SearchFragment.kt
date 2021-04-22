@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,6 +26,7 @@ import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
 import github.karchx.wiki.databinding.SearchFragmentBinding
 import github.karchx.wiki.listeners.ArticleItemClickListener
+import github.karchx.wiki.tools.news_engine.NewsArticleItem
 import github.karchx.wiki.tools.news_engine.NewsEngine
 import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
@@ -50,6 +52,8 @@ class SearchFragment : Fragment() {
     private var engine: SearchEngine? = null
     private var customAnims: CustomAnimations? = null
     private var newsEngine: NewsEngine? = null
+    private var newsLD: MutableLiveData<ArrayList<NewsArticleItem>> = MutableLiveData()
+    private var newsArticles: ArrayList<NewsArticleItem> = ArrayList()
     private var userLang: String? = null
 
 
@@ -61,7 +65,14 @@ class SearchFragment : Fragment() {
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
 
-        newsEngine!!.getNews(userLang)
+        newsEngine!!.getNews(newsLD, userLang)
+
+        newsLD.observe(viewLifecycleOwner) {
+            for (article in it) {
+                newsArticles.add(article)
+            }
+            Log.d("gg", newsArticles.toString())
+        }
 
         mReloadFragmentFab!!.setOnClickListener {
             customAnims!!.setClickAnim(mReloadFragmentFab!!)
