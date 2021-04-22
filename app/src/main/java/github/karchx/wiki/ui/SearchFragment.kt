@@ -53,6 +53,7 @@ class SearchFragment : Fragment() {
     private var mUserRequest: EditText? = null
     private var mSearchField: TextInputLayout? = null
     private var mArticlesRecycler: RecyclerView? = null
+    private var mNewsArticlesRecycler: RecyclerView? = null
     private var customAnims: CustomAnimations? = null
     private var engine: SearchEngine = SearchEngine()
     private var newsEngine: NewsEngine = NewsEngine()
@@ -89,13 +90,11 @@ class SearchFragment : Fragment() {
                 // init recycler params
                 val layoutManager = GridLayoutManager(context, 1)
                 val adapter = NewsListAdapter(titles, datesPublishedTime, images)
-                val recyclerView =
-                    requireActivity().findViewById<RecyclerView>(R.id.recyclerViewNewsArticlesList)
 
-                recyclerView.setHasFixedSize(true)
-                recyclerView.layoutManager = layoutManager
-                recyclerView.adapter = adapter
-                customAnims!!.setRecyclerAnim(recyclerView)
+                mNewsArticlesRecycler!!.setHasFixedSize(true)
+                mNewsArticlesRecycler!!.layoutManager = layoutManager
+                mNewsArticlesRecycler!!.adapter = adapter
+                customAnims!!.setRecyclerAnim(mNewsArticlesRecycler!!)
             }
         }
 
@@ -143,7 +142,7 @@ class SearchFragment : Fragment() {
                                     mSearchField!!,
                                     mUserRequest!!
                                 )
-                                hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!)
+                                hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!, mNewsArticlesRecycler!!)
 
                                 mRequestText!!.text = buildFoundContentMessage(userRequest)
                                 customAnims!!.setViewInAnim(
@@ -323,5 +322,6 @@ class SearchFragment : Fragment() {
         mReloadFragmentFab = binding.fabReloadFragment
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
+        mNewsArticlesRecycler = binding.recyclerViewNewsArticlesList
     }
 }
