@@ -7,7 +7,6 @@ package github.karchx.wiki.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,12 +48,12 @@ class SearchFragment : Fragment() {
     private var mUserRequest: EditText? = null
     private var mSearchField: TextInputLayout? = null
     private var mArticlesRecycler: RecyclerView? = null
-    private var engine: SearchEngine? = null
     private var customAnims: CustomAnimations? = null
-    private var newsEngine: NewsEngine? = null
+    private var engine: SearchEngine = SearchEngine()
+    private var newsEngine: NewsEngine = NewsEngine()
     private var newsLD: MutableLiveData<ArrayList<NewsArticleItem>> = MutableLiveData()
     private var newsArticles: ArrayList<NewsArticleItem> = ArrayList()
-    private var userLang: String? = null
+    private var userLang: String = Locale.getDefault().language
 
 
     override fun onCreateView(
@@ -65,13 +64,12 @@ class SearchFragment : Fragment() {
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
 
-        newsEngine!!.getNews(newsLD, userLang)
+        newsEngine.getNews(newsLD, userLang)
 
         newsLD.observe(viewLifecycleOwner) {
             for (article in it) {
                 newsArticles.add(article)
             }
-            Log.d("gg", newsArticles.toString())
         }
 
         mReloadFragmentFab!!.setOnClickListener {
@@ -161,7 +159,8 @@ class SearchFragment : Fragment() {
             // init recycler params
             val layoutManager = GridLayoutManager(context, 1)
             val adapter = ArticlesListAdapter(titles, descriptions, ids)
-            val recyclerView = requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
+            val recyclerView =
+                requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
 
             // Show list of articles on display (recycler: title and brief description)
             recyclerView.setHasFixedSize(true)
@@ -180,7 +179,7 @@ class SearchFragment : Fragment() {
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
-                                    userLang!!
+                                    userLang
                                 )
                             )
                         }
@@ -191,7 +190,7 @@ class SearchFragment : Fragment() {
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
-                                    userLang!!
+                                    userLang
                                 )
                             )
                         }
@@ -201,9 +200,9 @@ class SearchFragment : Fragment() {
 
     private fun getArticles(request: String): ArrayList<ArticleItem>? {
         // Param `request` -- user's request (in search textInput field)
-        val url = engine!!.formUrl(userLang!!, request)
-        val content = engine!!.getPagesIds(url)!!
-        return engine!!.getPagesInfo(content)
+        val url = engine.formUrl(userLang, request)
+        val content = engine.getPagesIds(url)!!
+        return engine.getPagesInfo(content)
     }
 
     private fun showEmptyFieldError(textField: EditText) {
@@ -263,10 +262,10 @@ class SearchFragment : Fragment() {
 
     private fun buildFoundContentMessage(userRequest: String): String {
         var message: String = when {
-            userLang!! == "en" -> {
+            userLang == "en" -> {
                 "Found on request:\n"
             }
-            userLang!! == "ru" -> {
+            userLang == "ru" -> {
                 "Найдено по запросу:\n"
             }
             else -> {
@@ -280,15 +279,11 @@ class SearchFragment : Fragment() {
 
     private fun initRes() {
         customAnims = CustomAnimations(requireContext())
-
         mProgressBar = binding.progressBar
         mRequestText = binding.textViewUserRequest
         mSearchBtn = binding.searchButton
         mReloadFragmentFab = binding.fabReloadFragment
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
-        engine = SearchEngine()
-        newsEngine = NewsEngine()
-        userLang = Locale.getDefault().language
     }
 }
