@@ -1,5 +1,9 @@
 package github.karchx.wiki.tools.news_engine;
 
+import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
+
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.Article;
 import com.kwabenaberko.newsapilib.models.request.TopHeadlinesRequest;
@@ -10,14 +14,12 @@ import java.util.List;
 
 public class NewsEngine {
 
-    int tokenIndex = 0;
+    int tokenIndex = 1;
 
     TokenManager tokenManager = new TokenManager();
     NewsApiClient newsApiClient = new NewsApiClient(tokenManager.getToken(tokenIndex));
 
-    public ArrayList<NewsArticleItem> getNews(String userLang) {
-        ArrayList<NewsArticleItem> newsArticles = new ArrayList<>();
-
+    public void getNews(MutableLiveData<ArrayList<NewsArticleItem>> newsArticles, String userLang) {
         newsApiClient.getTopHeadlines(
                 new TopHeadlinesRequest.Builder()
                         .language(userLang)
@@ -25,18 +27,19 @@ public class NewsEngine {
                 new NewsApiClient.ArticlesResponseCallback() {
                     @Override
                     public void onSuccess(ArticleResponse response) {
+                        ArrayList<NewsArticleItem> articles = new ArrayList<>();
                         List<Article> responseArray = response.getArticles();
                         for (Article article : responseArray) {
                             // In some responses, there isn't url to image
                             if (article.getUrlToImage() == null) {
-                                newsArticles.add(new NewsArticleItem(
+                                articles.add(new NewsArticleItem(
                                         article.getTitle(),
                                         article.getDescription(),
                                         article.getPublishedAt(),
                                         "",
                                         article.getUrl()));
                             } else {
-                                newsArticles.add(new NewsArticleItem(
+                                articles.add(new NewsArticleItem(
                                         article.getTitle(),
                                         article.getDescription(),
                                         article.getPublishedAt(),
@@ -45,7 +48,7 @@ public class NewsEngine {
                             }
                         }
 
-                        System.out.println(newsArticles);
+                        newsArticles.postValue(new ArrayList<>(articles));
                     }
 
                     @Override
@@ -54,7 +57,5 @@ public class NewsEngine {
                     }
                 }
         );
-
-        return newsArticles;
     }
 }
