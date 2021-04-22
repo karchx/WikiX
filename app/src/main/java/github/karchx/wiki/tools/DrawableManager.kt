@@ -2,10 +2,7 @@ package github.karchx.wiki.tools
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.InputStream
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -18,13 +15,13 @@ class DrawableManager {
                 val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
                 connection.connect()
                 val input: InputStream = connection.inputStream
-                return BitmapFactory.decodeStream(input)
+                return Bitmap.createScaledBitmap(BitmapFactory.decodeStream(input), 600, 400, true)
             }
             catch (ex: Exception) {
                 val connection: HttpURLConnection = URL("https://angliyskiyazik.ru/wp-content/uploads/2018/05/news.jpg").openConnection() as HttpURLConnection
                 connection.connect()
                 val input: InputStream = connection.inputStream
-                return BitmapFactory.decodeStream(input)
+                return Bitmap.createScaledBitmap(BitmapFactory.decodeStream(input), 600, 400, true)
             }
         }
     }
