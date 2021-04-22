@@ -6,6 +6,7 @@
 package github.karchx.wiki.ui
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,9 +25,12 @@ import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
 import github.karchx.wiki.adapters.ArticlesListAdapter
+import github.karchx.wiki.adapters.NewsListAdapter
 import github.karchx.wiki.databinding.SearchFragmentBinding
 import github.karchx.wiki.listeners.ArticleItemClickListener
+import github.karchx.wiki.tools.DrawableManager
 import github.karchx.wiki.tools.news_engine.NewsArticleItem
+import github.karchx.wiki.tools.news_engine.NewsArticlesItemRecycler
 import github.karchx.wiki.tools.news_engine.NewsEngine
 import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
@@ -69,6 +74,28 @@ class SearchFragment : Fragment() {
         newsLD.observe(viewLifecycleOwner) {
             for (article in it) {
                 newsArticles.add(article)
+            }
+            lifecycleScope.launch {
+                val articles = showAndCacheNewsArticles(newsArticles)
+                val titles = ArrayList<String>()
+                val datesPublishedTime = ArrayList<String>()
+                val images = ArrayList<Bitmap>()
+                for (article in articles) {
+                    titles.add(article.title)
+                    datesPublishedTime.add(article.datePublishedTime)
+                    images.add(article.image)
+                }
+
+                // init recycler params
+                val layoutManager = GridLayoutManager(context, 1)
+                val adapter = NewsListAdapter(titles, datesPublishedTime, images)
+                val recyclerView =
+                    requireActivity().findViewById<RecyclerView>(R.id.recyclerViewNewsArticlesList)
+
+                recyclerView.setHasFixedSize(true)
+                recyclerView.layoutManager = layoutManager
+                recyclerView.adapter = adapter
+                customAnims!!.setRecyclerAnim(recyclerView)
             }
         }
 
@@ -127,7 +154,7 @@ class SearchFragment : Fragment() {
                                 showView(mProgressBar!!, mRequestText!!, mReloadFragmentFab!!)
                             }
 
-                            showAndCache(getArticles(userRequest)!!)
+                            showAndCacheArticles(getArticles(userRequest)!!)
                             requireActivity().runOnUiThread {
                                 hideView(mProgressBar!!)
                             }
@@ -144,7 +171,18 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    private suspend fun showAndCache(articles: ArrayList<ArticleItem>) =
+    private suspend fun showAndCacheNewsArticles(newsArticles: ArrayList<NewsArticleItem>) : ArrayList<NewsArticlesItemRecycler> =
+        withContext(Dispatchers.Default) {
+            val data = ArrayList<NewsArticlesItemRecycler>()
+
+            for (article in newsArticles) {
+                data.add(NewsArticlesItemRecycler(article.title, article.datePublished, DrawableManager.getDrawable(article.urlToImage)) )
+            }
+
+            return@withContext data
+        }
+
+    private suspend fun showAndCacheArticles(articles: ArrayList<ArticleItem>) =
         withContext(Dispatchers.Main) {
             val titles: ArrayList<String> = ArrayList()
             val descriptions: ArrayList<String> = ArrayList()
@@ -261,11 +299,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun buildFoundContentMessage(userRequest: String): String {
-        var message: String = when {
-            userLang == "en" -> {
+        var message: String = when (userLang) {
+            "en" -> {
                 "Found on request:\n"
             }
-            userLang == "ru" -> {
+            "ru" -> {
                 "Найдено по запросу:\n"
             }
             else -> {
