@@ -7,6 +7,7 @@ package github.karchx.wiki.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class SearchFragment : Fragment() {
     private var engine: SearchEngine? = null
     private var customAnims: CustomAnimations? = null
     private var newsEngine: NewsEngine? = null
+    private var userLang: String? = null
 
 
     override fun onCreateView(
@@ -59,7 +61,7 @@ class SearchFragment : Fragment() {
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
 
-        newsEngine!!.getNews("ru")
+        newsEngine!!.getNews(userLang)
 
         mReloadFragmentFab!!.setOnClickListener {
             customAnims!!.setClickAnim(mReloadFragmentFab!!)
@@ -167,7 +169,7 @@ class SearchFragment : Fragment() {
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
-                                    Locale.getDefault().language
+                                    userLang!!
                                 )
                             )
                         }
@@ -178,7 +180,7 @@ class SearchFragment : Fragment() {
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
-                                    Locale.getDefault().language
+                                    userLang!!
                                 )
                             )
                         }
@@ -188,7 +190,7 @@ class SearchFragment : Fragment() {
 
     private fun getArticles(request: String): ArrayList<ArticleItem>? {
         // Param `request` -- user's request (in search textInput field)
-        val url = engine!!.formUrl(Locale.getDefault().language, request)
+        val url = engine!!.formUrl(userLang!!, request)
         val content = engine!!.getPagesIds(url)!!
         return engine!!.getPagesInfo(content)
     }
@@ -249,13 +251,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun buildFoundContentMessage(userRequest: String): String {
-        val lang = Locale.getDefault().language // en/ru/other language in this format
-
         var message: String = when {
-            lang.equals("en") -> {
+            userLang!! == "en" -> {
                 "Found on request:\n"
             }
-            lang.equals("ru") -> {
+            userLang!! == "ru" -> {
                 "Найдено по запросу:\n"
             }
             else -> {
@@ -278,5 +278,6 @@ class SearchFragment : Fragment() {
         mArticlesRecycler = binding.recyclerViewArticlesList
         engine = SearchEngine()
         newsEngine = NewsEngine()
+        userLang = Locale.getDefault().language
     }
 }

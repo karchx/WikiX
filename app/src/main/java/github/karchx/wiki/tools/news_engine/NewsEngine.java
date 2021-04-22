@@ -27,13 +27,25 @@ public class NewsEngine {
                     public void onSuccess(ArticleResponse response) {
                         List<Article> responseArray = response.getArticles();
                         for (Article article : responseArray) {
-                            newsArticles.add(new NewsArticleItem(
-                                    article.getTitle(),
-                                    article.getDescription(),
-                                    article.getPublishedAt(),
-                                    article.getUrlToImage(),
-                                    article.getUrl()));
+                            // In some responses, there isn't url to image
+                            if (article.getUrlToImage() == null) {
+                                newsArticles.add(new NewsArticleItem(
+                                        article.getTitle(),
+                                        article.getDescription(),
+                                        article.getPublishedAt(),
+                                        "",
+                                        article.getUrl()));
+                            } else {
+                                newsArticles.add(new NewsArticleItem(
+                                        article.getTitle(),
+                                        article.getDescription(),
+                                        article.getPublishedAt(),
+                                        article.getUrlToImage(),
+                                        article.getUrl()));
+                            }
                         }
+
+                        System.out.println(newsArticles);
                     }
 
                     @Override
@@ -45,5 +57,4 @@ public class NewsEngine {
 
         return newsArticles;
     }
-
 }
