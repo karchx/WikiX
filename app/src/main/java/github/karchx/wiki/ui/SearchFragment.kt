@@ -37,6 +37,7 @@ import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import github.karchx.wiki.ui.helpers.CustomAnimations
 import kotlinx.coroutines.*
+import org.w3c.dom.Text
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -49,6 +50,7 @@ class SearchFragment : Fragment() {
 
     private var mProgressBar: ProgressBar? = null
     private var mRequestText: TextView? = null
+    private var mNewsFound: TextView? = null
     private var mSearchBtn: Button? = null
     private var mReloadFragmentFab: FloatingActionButton? = null
     private var mUserRequest: EditText? = null
@@ -144,7 +146,13 @@ class SearchFragment : Fragment() {
                                     mSearchField!!,
                                     mUserRequest!!
                                 )
-                                hideView(mSearchBtn!!, mSearchField!!, mUserRequest!!, mNewsArticlesRecycler!!)
+                                hideView(
+                                    mNewsFound!!,
+                                    mSearchBtn!!,
+                                    mSearchField!!,
+                                    mUserRequest!!,
+                                    mNewsArticlesRecycler!!
+                                )
 
                                 mRequestText!!.text = buildFoundContentMessage(userRequest)
                                 customAnims!!.setViewInAnim(
@@ -172,13 +180,19 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    private suspend fun showAndCacheNewsArticles(newsArticles: ArrayList<NewsArticleItem>) : ArrayList<NewsArticlesItemRecycler> =
+    private suspend fun showAndCacheNewsArticles(newsArticles: ArrayList<NewsArticleItem>): ArrayList<NewsArticlesItemRecycler> =
         withContext(Dispatchers.Default) {
             val data = ArrayList<NewsArticlesItemRecycler>()
 
             for (article in newsArticles) {
                 mCardViewNewsItem = requireActivity().findViewById(R.id.cardViewNewsItem)
-                data.add(NewsArticlesItemRecycler(article.title, article.datePublished, DrawableManager.getDrawable(requireActivity(), article.urlToImage)) )
+                data.add(
+                    NewsArticlesItemRecycler(
+                        article.title,
+                        article.datePublished,
+                        DrawableManager.getDrawable(requireActivity(), article.urlToImage)
+                    )
+                )
             }
 
             return@withContext data
@@ -322,6 +336,7 @@ class SearchFragment : Fragment() {
         mProgressBar = binding.progressBar
         mRequestText = binding.textViewUserRequest
         mSearchBtn = binding.searchButton
+        mNewsFound = binding.textViewNewsFound
         mReloadFragmentFab = binding.fabReloadFragment
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
