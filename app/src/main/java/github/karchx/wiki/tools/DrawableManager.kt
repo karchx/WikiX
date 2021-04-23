@@ -15,7 +15,7 @@ class DrawableManager {
         fun getDrawable(activity: Activity, url: String): Bitmap {
             val displayMetrics = DisplayMetrics()
             activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            val height = displayMetrics.heightPixels / 5
+            val height = displayMetrics.widthPixels / 3
             val width = displayMetrics.widthPixels / 2
 
             try {
