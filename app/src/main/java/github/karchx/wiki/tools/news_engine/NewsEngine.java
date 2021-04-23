@@ -1,7 +1,5 @@
 package github.karchx.wiki.tools.news_engine;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.kwabenaberko.newsapilib.NewsApiClient;
@@ -28,7 +26,7 @@ public class NewsEngine {
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         ArrayList<NewsArticleItem> articles = new ArrayList<>();
-                        List<Article> responseArray = response.getArticles();
+                        List<Article> responseArray = response.getArticles().subList(0, 10);
                         for (Article article : responseArray) {
                             // In some responses, there isn't url to image
                             if (article.getUrlToImage() == null) {
