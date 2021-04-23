@@ -42,7 +42,8 @@ class NewsListAdapter(
 
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var title: TextView = itemView.findViewById(R.id.textViewNewsArticleTitle)
-        var datePublishedTime: TextView = itemView.findViewById(R.id.textViewNewsArticlePublishedDate)
+        var datePublishedTime: TextView =
+            itemView.findViewById(R.id.textViewNewsArticlePublishedDate)
         var image: ImageView = itemView.findViewById(R.id.imageViewNewsArticle)
     }
 }
