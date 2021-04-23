@@ -1,7 +1,5 @@
 package github.karchx.wiki.tools.news_engine
 
-import android.graphics.Bitmap
-
 data class NewsArticleItem(
     val title: String,
     val description: String,

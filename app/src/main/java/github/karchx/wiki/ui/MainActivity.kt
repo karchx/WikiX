@@ -15,26 +15,27 @@ import github.karchx.wiki.R
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.articlePage -> {
-                val navController = findNavController(R.id.nav_host_fragment)
-                navController.navigate(R.id.articleFragment)
-                return@OnNavigationItemSelectedListener true
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.articlePage -> {
+                    val navController = findNavController(R.id.nav_host_fragment)
+                    navController.navigate(R.id.articleFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.searchPage -> {
+                    val navController = findNavController(R.id.nav_host_fragment)
+                    navController.navigate(R.id.searchFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.settingsPage -> {
+                    val navController = findNavController(R.id.nav_host_fragment)
+                    navController.navigate(R.id.settingsFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
             }
-            R.id.searchPage -> {
-                val navController = findNavController(R.id.nav_host_fragment)
-                navController.navigate(R.id.searchFragment)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.settingsPage -> {
-                val navController = findNavController(R.id.nav_host_fragment)
-                navController.navigate(R.id.settingsFragment)
-                return@OnNavigationItemSelectedListener true
-            }
+            false
         }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

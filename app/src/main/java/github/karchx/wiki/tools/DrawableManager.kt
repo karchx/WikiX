@@ -28,8 +28,7 @@ class DrawableManager {
                     height,
                     true
                 )
-            }
-            catch (ex: Exception) {
+            } catch (ex: Exception) {
                 val connection: HttpURLConnection =
                     URL("https://angliyskiyazik.ru/wp-content/uploads/2018/05/news.jpg").openConnection() as HttpURLConnection
                 connection.connect()

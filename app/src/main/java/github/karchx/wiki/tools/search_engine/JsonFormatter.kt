@@ -7,7 +7,6 @@ package github.karchx.wiki.tools.search_engine
 
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.collections.ArrayList
 
 class JsonFormatter {
 

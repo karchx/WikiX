@@ -1,15 +1,15 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="primaryBlue">#3B6ED6</color>
+    <color name="primaryBlue">#3B6ED6</color>
 
-  <color name="primaryItemBackground">#E2E5F3</color>
-  <color name="primaryBackground">#D4D7EC</color>
+    <color name="primaryItemBackground">#E2E5F3</color>
+    <color name="primaryBackground">#D4D7EC</color>
 
-  <color name="primaryText">#121212</color>
-  <color name="secondaryText">#282828</color>
+    <color name="primaryText">#121212</color>
+    <color name="secondaryText">#282828</color>
 
-  <color name="primaryWhite">#ffffff</color>
-  <color name="secondaryWhite">#f2f2f2</color>
+    <color name="primaryWhite">#ffffff</color>
+    <color name="secondaryWhite">#f2f2f2</color>
 
-  <color name="grey">#5A5A5A</color>
+    <color name="grey">#5A5A5A</color>
 </resources>

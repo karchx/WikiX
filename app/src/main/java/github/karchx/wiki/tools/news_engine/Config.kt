@@ -11,7 +11,7 @@ class Config() {
         "e8c6e3b087a74db6a6212dc9c321f59b"
     )
 
-    fun getNewsToken(tokenIndex: Int) : String {
+    fun getNewsToken(tokenIndex: Int): String {
         return newsTokens[tokenIndex]
     }
 }

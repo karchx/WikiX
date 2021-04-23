@@ -13,7 +13,7 @@ import okhttp3.Response
 
 class NetUtils {
     companion object {
-        suspend fun fetchAsync( urlString: String ): Response {
+        suspend fun fetchAsync(urlString: String): Response {
             return withContext(Dispatchers.IO) {
                 httpGetAsync() {
                     url(urlString)
@@ -29,20 +29,20 @@ class NetUtils {
 //                    "Host" to URL(urlString).host
 //                    "Upgrade-Insecure-Requests" to "1"
 //                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0"
-                        //                    "username" to "rybalkinsd"
-                        //                    "security-policy" to json {
-                        //                        "base-uri" to "none"
-                        //                        "expect-ct" to json {
-                        //                            "max-age" to 2592000
-                        //                            "report-uri" to "foo.com/bar"
-                        //                        }
-                        //                        "script-src" to listOf("github.com", "github.io")
-                        //                    }
-                        //
-                        //                    cookie {
-                        //                        "user_session" to "toFycNV"
-                        //                        "expires" to "Fri, 21 Dec 2018 09:29:55 -0000"
-                        //                    }
+                    //                    "username" to "rybalkinsd"
+                    //                    "security-policy" to json {
+                    //                        "base-uri" to "none"
+                    //                        "expect-ct" to json {
+                    //                            "max-age" to 2592000
+                    //                            "report-uri" to "foo.com/bar"
+                    //                        }
+                    //                        "script-src" to listOf("github.com", "github.io")
+                    //                    }
+                    //
+                    //                    cookie {
+                    //                        "user_session" to "toFycNV"
+                    //                        "expires" to "Fri, 21 Dec 2018 09:29:55 -0000"
+                    //                    }
 //                    }
                 }.await()
             }

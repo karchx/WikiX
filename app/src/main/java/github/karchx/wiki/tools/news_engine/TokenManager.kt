@@ -1,13 +1,10 @@
 package github.karchx.wiki.tools.news_engine
 
-import java.lang.Exception
-import java.lang.IndexOutOfBoundsException
-
 class TokenManager {
 
     private val config = Config()
 
-    fun getToken(_tokenIndex: Int) : String {
+    fun getToken(_tokenIndex: Int): String {
         var tokenIndex = _tokenIndex
         var token = ""
 
