@@ -37,7 +37,6 @@ import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import github.karchx.wiki.ui.helpers.CustomAnimations
 import kotlinx.coroutines.*
-import org.w3c.dom.Text
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -73,6 +72,8 @@ class SearchFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
+
+        customAnims!!.setViewInAnim(mNewsFound!!)
 
         newsEngine.getNews(newsLD, userLang)
 
