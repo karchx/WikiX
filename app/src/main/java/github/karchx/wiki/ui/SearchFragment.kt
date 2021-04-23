@@ -39,7 +39,6 @@ import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import github.karchx.wiki.ui.helpers.CustomAnimations
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.util.*
 import kotlin.collections.ArrayList

@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-   private val repository: Repository
-): ViewModel() {
+    private val repository: Repository
+) : ViewModel() {
 //   val text = repository.text
 //   val user = repository.getUser(userId).asLiveData()
 }

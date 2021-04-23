@@ -60,16 +60,16 @@ class ArticleFragment : Fragment() {
 
         mProgressBar!!.visibility = View.VISIBLE
 
-        viewModel.articlePage.observe(viewLifecycleOwner){ articlePage ->
-            if( args.articleId != 0L ) {
+        viewModel.articlePage.observe(viewLifecycleOwner) { articlePage ->
+            if (args.articleId != 0L) {
                 binding.articlePage.loadDataWithBaseURL(
                     articleHtmlUrl(articlePage.title, args.lang!!),
                     articlePage.text, "text/html", null, null
                 )
             }
         }
-        if( args.articleId != 0L ) {
-            viewModel.fetchJsonPage( args.articleId.toInt(), args.lang!! )
+        if (args.articleId != 0L) {
+            viewModel.fetchJsonPage(args.articleId.toInt(), args.lang!!)
         }
 
         binding.articlePage.webViewClient = object : WebViewClient() {
@@ -82,7 +82,7 @@ class ArticleFragment : Fragment() {
         }
     }
 
-    private fun articleHtmlUrl(articleTitle: String, lang: String) : String {
+    private fun articleHtmlUrl(articleTitle: String, lang: String): String {
         return "https://${lang}.wikipedia.org/wiki/${articleTitle}"
     }
 
