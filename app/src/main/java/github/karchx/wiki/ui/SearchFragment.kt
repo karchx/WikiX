@@ -7,12 +7,14 @@ package github.karchx.wiki.ui
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -37,6 +39,8 @@ import github.karchx.wiki.tools.search_engine.ArticleItem
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import github.karchx.wiki.ui.helpers.CustomAnimations
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -65,6 +69,7 @@ class SearchFragment : Fragment() {
     private var userLang: String = Locale.getDefault().language
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,7 +93,11 @@ class SearchFragment : Fragment() {
                 val images = ArrayList<Bitmap>()
                 for (article in articles) {
                     titles.add(article.title)
-                    datesPublishedTime.add(article.datePublishedTime)
+
+                    val dateInString = article.datePublishedTime
+                    val date = parseDate(dateInString)
+
+                    datesPublishedTime.add(date)
                     images.add(article.image)
                 }
 
@@ -330,6 +339,14 @@ class SearchFragment : Fragment() {
         message += userRequest.capitalize(Locale.ROOT)
 
         return message
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseDate(inputDate: String): String {
+        return ZonedDateTime.parse(inputDate).toString()
+            .replace("T", "  ")
+            .replace("Z", "")
+            .replace("-", "/")
     }
 
     private fun initRes() {
