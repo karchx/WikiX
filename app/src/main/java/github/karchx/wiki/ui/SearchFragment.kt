@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +55,7 @@ class SearchFragment : Fragment() {
     private var mSearchField: TextInputLayout? = null
     private var mArticlesRecycler: RecyclerView? = null
     private var mNewsArticlesRecycler: RecyclerView? = null
+    private var mCardViewNewsItem: CardView? = null
     private var customAnims: CustomAnimations? = null
     private var engine: SearchEngine = SearchEngine()
     private var newsEngine: NewsEngine = NewsEngine()
@@ -175,7 +177,8 @@ class SearchFragment : Fragment() {
             val data = ArrayList<NewsArticlesItemRecycler>()
 
             for (article in newsArticles) {
-                data.add(NewsArticlesItemRecycler(article.title, article.datePublished, DrawableManager.getDrawable(article.urlToImage)) )
+                mCardViewNewsItem = requireActivity().findViewById(R.id.cardViewNewsItem)
+                data.add(NewsArticlesItemRecycler(article.title, article.datePublished, DrawableManager.getDrawable(requireActivity(), article.urlToImage)) )
             }
 
             return@withContext data
