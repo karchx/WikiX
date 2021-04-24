@@ -10,4 +10,13 @@
     <string name="search_in_wikipedia">Search in Wikipedia</string>
     <string name="find_button">Search</string>
     <string name="news_found">In the News:</string>
+    <string name="choose_language">Choose language (for articles and news):</string>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Русский</item>
+        <item>Español</item>
+        <item>Italiano</item>
+        <item>中文 (Chinese)</item>
+    </string-array>
 </resources>
