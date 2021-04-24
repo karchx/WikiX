@@ -32,4 +32,6 @@ class ArticleViewModel @Inject constructor(
         }
     }
 }
-data class ArticlePage(var pageId: Int = 0, var title: String = "", var text: String = "")
+data class ArticlePage(
+        var pageId: Int = 0, val lang: String
+        , var title: String = "", var text: String = "" )
