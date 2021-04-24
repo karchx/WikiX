@@ -26,7 +26,7 @@ public class NewsEngine {
                     @Override
                     public void onSuccess(ArticleResponse response) {
                         ArrayList<NewsArticleItem> articles = new ArrayList<>();
-                        List<Article> responseArray = response.getArticles().subList(0, 10);
+                        List<Article> responseArray = response.getArticles().subList(0, 8);
                         for (Article article : responseArray) {
                             try {
                                 // In some responses, there isn't url to image
