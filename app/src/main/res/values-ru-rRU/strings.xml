@@ -10,4 +10,5 @@
     <string name="find_button">Поиск</string>
     <string name="articles">Статьи</string>
     <string name="news_found">В новостях:</string>
+    <string name="choose_language">Выбор языка (для статей и новостей):</string>
 </resources>
