@@ -1,29 +1,27 @@
 package github.karchx.wiki.tools.news_engine
 
-class TokenManager {
+class TokenManager(private var tokenIndex: Int) {
 
     private val config = Config()
 
-    fun getToken(_tokenIndex: Int): String {
-        var tokenIndex = _tokenIndex
+    fun getNewToken(): String {
         var token = ""
 
         try {
-            token = config.getNewsToken(tokenIndex)
+            token = config.getNewsToken(tokenIndex+1)
+            tokenIndex += 1
         }
 
         // All indexes changed. Start with 0 index again
         catch (ex: IndexOutOfBoundsException) {
             tokenIndex = 0
-            getToken(tokenIndex)
-        }
-
-        // Api error
-        catch (ex: Exception) {
-            tokenIndex += 1
-            getToken(tokenIndex)
+            getNewToken()
         }
 
         return token
+    }
+
+    fun getToken(): String {
+        return config.getNewsToken(tokenIndex)
     }
 }

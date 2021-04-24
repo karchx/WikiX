@@ -12,10 +12,8 @@ import java.util.List;
 
 public class NewsEngine {
 
-    int tokenIndex = 0;
-
-    TokenManager tokenManager = new TokenManager();
-    NewsApiClient newsApiClient = new NewsApiClient(tokenManager.getToken(tokenIndex));
+    TokenManager tokenManager = new TokenManager(0);
+    NewsApiClient newsApiClient = new NewsApiClient(tokenManager.getToken());
 
     public void getNews(MutableLiveData<ArrayList<NewsArticleItem>> newsArticles, String userLang) {
         newsApiClient.getTopHeadlines(
@@ -52,12 +50,13 @@ public class NewsEngine {
                                 ex.printStackTrace();
                             }
                         }
-
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        System.out.println(throwable.getMessage());
+                        System.out.println("Токен сменился и всё ок");
+                        tokenManager.getNewToken();
+                        getNews(newsArticles, userLang);
                     }
                 }
         );
