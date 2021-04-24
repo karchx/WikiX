@@ -13,31 +13,33 @@ import io.github.rybalkinsd.kohttp.ext.asString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.util.*
 import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val appDao: AppDao
 ) {
+    private val localCache = LocalCache( appDao )
+
     private fun articleJsonUrl(articleId: Int, lang: String) : String {
         return "https://${lang}.wikipedia.org/w/api.php?action=parse&format=json&pageid=${articleId}&prop=text&format=json"
     }
     suspend fun fetchArticlePage( articleId: Int, lang: String ) : ArticlePage?
             = withContext(Dispatchers.IO){
         try {
-            val articleEntry = appDao.getArticle( articleId )
-            if ( articleEntry != null ) {
-                return@withContext ArticlePage(articleEntry.id, articleEntry.title, articleEntry.text)
+            var articlePage = localCache.getArticlePage( articleId, lang )
+            if ( articlePage != null ) {
+                return@withContext articlePage
             } else {
                 val pageUrl: String = articleJsonUrl(articleId, lang)
                 val body = NetUtils.fetchAsync(pageUrl).asString()
                 body ?: return@withContext null
 
                 val json = JSONObject(body).getJSONObject("parse")
-                val articlePage = ArticlePage(
-                        json.getInt("pageid"), json.getString("title"), json.getJSONObject("text").getString("*"))
+                articlePage = ArticlePage(
+                        json.getInt("pageid"), lang, json.getString("title"), json.getJSONObject("text").getString("*"))
+                localCache.saveArticle( articlePage )
 
-                appDao.insertArticle(ArticleEntry(
-                        articlePage.pageId, lang, articlePage.title, articlePage.text))
                 return@withContext articlePage
             }
         } catch ( ex : Exception )
