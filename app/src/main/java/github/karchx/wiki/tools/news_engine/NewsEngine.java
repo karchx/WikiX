@@ -54,7 +54,6 @@ public class NewsEngine {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        System.out.println("Токен сменился и всё ок");
                         tokenManager.getNewToken();
                         getNews(newsArticles, userLang);
                     }
