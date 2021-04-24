@@ -5,20 +5,22 @@
 
 package github.karchx.wiki.model.db
 
-import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import java.util.*
 
 @Dao
 interface AppDao {
     @Query("SELECT * FROM articles WHERE id = :articleId AND lang = :lang")
-    suspend fun getArticle(articleId: Int, lang: String ): ArticleEntry?
+    suspend fun getArticle(articleId: Int, lang: String): ArticleEntry?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArticle( article: ArticleEntry )
+    suspend fun insertArticle(article: ArticleEntry)
 
     @Query("DELETE FROM articles WHERE cache_time < :date")
-    suspend fun deleteOutdatedArticles( date: Date )
+    suspend fun deleteOutdatedArticles(date: Date)
 
 //    @Query( "SELECT id, lang FROM articles")
 //    suspend fun getArticlesDebug(): List<DebugArticle>
