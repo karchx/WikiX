@@ -28,25 +28,31 @@ public class NewsEngine {
                         ArrayList<NewsArticleItem> articles = new ArrayList<>();
                         List<Article> responseArray = response.getArticles().subList(0, 10);
                         for (Article article : responseArray) {
-                            // In some responses, there isn't url to image
-                            if (article.getUrlToImage() == null) {
-                                articles.add(new NewsArticleItem(
-                                        article.getTitle(),
-                                        article.getDescription(),
-                                        article.getPublishedAt(),
-                                        "",
-                                        article.getUrl()));
-                            } else {
-                                articles.add(new NewsArticleItem(
-                                        article.getTitle(),
-                                        article.getDescription(),
-                                        article.getPublishedAt(),
-                                        article.getUrlToImage(),
-                                        article.getUrl()));
+                            try {
+                                // In some responses, there isn't url to image
+                                if (article.getUrlToImage() == null) {
+                                    articles.add(new NewsArticleItem(
+                                            article.getTitle(),
+                                            article.getDescription(),
+                                            article.getPublishedAt(),
+                                            "",
+                                            article.getUrl()));
+                                } else {
+                                    articles.add(new NewsArticleItem(
+                                            article.getTitle(),
+                                            article.getDescription(),
+                                            article.getPublishedAt(),
+                                            article.getUrlToImage(),
+                                            article.getUrl()));
+                                }
+
+
+                                newsArticles.postValue(new ArrayList<>(articles));
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
                         }
 
-                        newsArticles.postValue(new ArrayList<>(articles));
                     }
 
                     @Override
