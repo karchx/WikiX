@@ -16,7 +16,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
-import github.karchx.wiki.R
 import github.karchx.wiki.databinding.SettingsFragmentBinding
 
 
