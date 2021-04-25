@@ -6,6 +6,8 @@
 package github.karchx.wiki.ui
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -65,7 +67,8 @@ class SearchFragment : Fragment() {
     private var newsEngine: NewsEngine = NewsEngine()
     private var newsLD: MutableLiveData<ArrayList<NewsArticleItem>> = MutableLiveData()
     private var newsArticles: ArrayList<NewsArticleItem> = ArrayList()
-    private var userLang: String = Locale.getDefault().language
+    private var userLang: String? = null
+    private var prefs: SharedPreferences? = null
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -76,6 +79,8 @@ class SearchFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
         initRes()
+
+
 
         customAnims!!.setViewInAnim(mNewsFound!!)
 
@@ -263,7 +268,7 @@ class SearchFragment : Fragment() {
 
     private fun getArticles(request: String): ArrayList<ArticleItem>? {
         // Param `request` -- user's request (in search textInput field)
-        val url = engine.formUrl(userLang, request)
+        val url = engine.formUrl(userLang!!, request)
         val content = engine.getPagesIds(url)!!
         return engine.getPagesInfo(content)
     }
@@ -349,6 +354,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun initRes() {
+        prefs = requireActivity().getSharedPreferences("prefs", MODE_PRIVATE)
         customAnims = CustomAnimations(requireContext())
         mProgressBar = binding.progressBar
         mRequestText = binding.textViewUserRequest
@@ -358,5 +364,6 @@ class SearchFragment : Fragment() {
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
         mNewsArticlesRecycler = binding.recyclerViewNewsArticlesList
+        userLang = prefs!!.getString("lang", "en")
     }
 }
