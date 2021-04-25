@@ -8,7 +8,7 @@ class TokenManager(private var tokenIndex: Int) {
         var token = ""
 
         try {
-            token = config.getNewsToken(tokenIndex+1)
+            token = config.getNewsToken(tokenIndex + 1)
             tokenIndex += 1
         }
 

@@ -364,6 +364,6 @@ class SearchFragment : Fragment() {
         mSearchField = binding.textInputLayoutUserRequest
         mArticlesRecycler = binding.recyclerViewArticlesList
         mNewsArticlesRecycler = binding.recyclerViewNewsArticlesList
-        userLang = prefs!!.getString("lang", "en")
+        userLang = prefs!!.getString("lang", Locale.getDefault().language)
     }
 }
