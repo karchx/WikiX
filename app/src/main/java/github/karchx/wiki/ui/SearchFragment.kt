@@ -5,7 +5,6 @@
 
 package github.karchx.wiki.ui
 
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -14,7 +13,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
@@ -34,14 +32,18 @@ import github.karchx.wiki.adapters.NewsListAdapter
 import github.karchx.wiki.databinding.SearchFragmentBinding
 import github.karchx.wiki.listeners.ArticleItemClickListener
 import github.karchx.wiki.tools.DrawableManager
+import github.karchx.wiki.tools.news_engine.DateParser
 import github.karchx.wiki.tools.news_engine.NewsArticleItem
 import github.karchx.wiki.tools.news_engine.NewsArticlesItemRecycler
 import github.karchx.wiki.tools.news_engine.NewsEngine
 import github.karchx.wiki.tools.search_engine.ArticleItem
+import github.karchx.wiki.tools.search_engine.MessageBuilder
 import github.karchx.wiki.tools.search_engine.SearchEngine
 import github.karchx.wiki.ui.helpers.CustomAnimations
+import github.karchx.wiki.ui.helpers.ViewExceptions
+import github.karchx.wiki.ui.helpers.ViewManager
+import github.karchx.wiki.ui.helpers.ViewManager.Companion.hideKeyboard
 import kotlinx.coroutines.*
-import java.time.ZonedDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -52,6 +54,8 @@ class SearchFragment : Fragment() {
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private var userLang: String? = null
+    private var prefs: SharedPreferences? = null
     private var mProgressBar: ProgressBar? = null
     private var mRequestText: TextView? = null
     private var mNewsFound: TextView? = null
@@ -67,9 +71,6 @@ class SearchFragment : Fragment() {
     private var newsEngine: NewsEngine = NewsEngine()
     private var newsLD: MutableLiveData<ArrayList<NewsArticleItem>> = MutableLiveData()
     private var newsArticles: ArrayList<NewsArticleItem> = ArrayList()
-    private var userLang: String? = null
-    private var prefs: SharedPreferences? = null
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -78,9 +79,13 @@ class SearchFragment : Fragment() {
     ): View {
         setHasOptionsMenu(true)
         _binding = SearchFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initRes()
-
-
 
         customAnims!!.setViewInAnim(mNewsFound!!)
 
@@ -99,7 +104,7 @@ class SearchFragment : Fragment() {
                     titles.add(article.title)
 
                     val dateInString = article.datePublishedTime
-                    val date = parseDate(dateInString)
+                    val date = DateParser.parseDate(dateInString)
 
                     datesPublishedTime.add(date)
                     images.add(article.image)
@@ -135,7 +140,7 @@ class SearchFragment : Fragment() {
             mUserRequest = binding.editTextUserRequest
 
             val userRequest = mUserRequest!!.text.toString()
-            if (!isEmptyField(userRequest)) {
+            if (!ViewExceptions.isEmptyInputField(userRequest)) {
                 val job: Job = GlobalScope.launch(Dispatchers.IO) {
 
                     when {
@@ -153,14 +158,14 @@ class SearchFragment : Fragment() {
                         else -> {
                             // Hide all views (only recycler on the screen) for comfortable articles viewing
                             requireActivity().runOnUiThread {
-                                requireView().hideKeyboard()
+                                view.hideKeyboard()
 
                                 customAnims!!.setViewOutAnim(
                                     mSearchBtn!!,
                                     mSearchField!!,
                                     mUserRequest!!
                                 )
-                                hideView(
+                                ViewManager.hideView(
                                     mNewsFound!!,
                                     mSearchBtn!!,
                                     mSearchField!!,
@@ -168,30 +173,34 @@ class SearchFragment : Fragment() {
                                     mNewsArticlesRecycler!!
                                 )
 
-                                mRequestText!!.text = buildFoundContentMessage(userRequest)
+                                mRequestText!!.text =
+                                    MessageBuilder.getFoundResponseMessage(userLang!!, userRequest)
                                 customAnims!!.setViewInAnim(
                                     mProgressBar!!,
                                     mRequestText!!,
                                     mReloadFragmentFab!!
                                 )
-                                showView(mProgressBar!!, mRequestText!!, mReloadFragmentFab!!)
+                                ViewManager.showView(
+                                    mProgressBar!!,
+                                    mRequestText!!,
+                                    mReloadFragmentFab!!
+                                )
                             }
 
                             showAndCacheArticles(getArticles(userRequest)!!)
                             requireActivity().runOnUiThread {
-                                hideView(mProgressBar!!)
+                                ViewManager.hideView(mProgressBar!!)
                             }
                         }
                     }
                 }
                 job.start()
             } else {
-                showEmptyFieldError(mUserRequest!!)
+                ViewExceptions.showEmptyInputFieldError(requireContext(), mUserRequest!!)
             }
         }
 
-        // Return the fragment view/layout
-        return binding.root
+
     }
 
     private suspend fun showAndCacheNewsArticles(newsArticles: ArrayList<NewsArticleItem>): ArrayList<NewsArticlesItemRecycler> =
@@ -273,17 +282,6 @@ class SearchFragment : Fragment() {
         return engine.getPagesInfo(content)
     }
 
-    private fun showEmptyFieldError(textField: EditText) {
-        val errorMessage = getString(R.string.empty_field_error)
-        textField.error = errorMessage
-        // mUserRequest!!.setTextColor(resources.getColor(R.color.some_color, theme))
-        textField.requestFocus()
-    }
-
-    private fun isEmptyField(fieldContent: String): Boolean {
-        return fieldContent.trim { it <= ' ' }.isEmpty()
-    }
-
     private fun foundAnyPages(content: ArrayList<ArticleItem>?): Boolean? {
         if (content == null) {
             // if error while founding
@@ -309,48 +307,6 @@ class SearchFragment : Fragment() {
         val duration = Toast.LENGTH_SHORT
         val toast = Toast.makeText(requireContext(), text, duration)
         toast.show()
-    }
-
-    private fun hideView(vararg views: View) {
-        for (view in views) {
-            view.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun showView(vararg views: View) {
-        for (view in views) {
-            view.visibility = View.VISIBLE
-        }
-    }
-
-    private fun View.hideKeyboard() {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(windowToken, 0)
-    }
-
-    private fun buildFoundContentMessage(userRequest: String): String {
-        var message: String = when (userLang) {
-            "en" -> {
-                "Found on request:\n"
-            }
-            "ru" -> {
-                "Найдено по запросу:\n"
-            }
-            else -> {
-                "Found on request:\n"
-            }
-        }
-        message += userRequest.capitalize(Locale.ROOT)
-
-        return message
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun parseDate(inputDate: String): String {
-        return ZonedDateTime.parse(inputDate).toString()
-            .replace("T", "  ")
-            .replace("Z", "")
-            .replace("-", "/")
     }
 
     private fun initRes() {
