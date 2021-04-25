@@ -71,6 +71,7 @@ class SearchFragment : Fragment() {
     private var newsEngine: NewsEngine = NewsEngine()
     private var newsLD: MutableLiveData<ArrayList<NewsArticleItem>> = MutableLiveData()
     private var newsArticles: ArrayList<NewsArticleItem> = ArrayList()
+    val ids: ArrayList<Long> = ArrayList()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -88,119 +89,10 @@ class SearchFragment : Fragment() {
         initRes()
 
         customAnims!!.setViewInAnim(mNewsFound!!)
-
         newsEngine.getNews(newsLD, userLang)
-
-        newsLD.observe(viewLifecycleOwner) {
-            for (article in it) {
-                newsArticles.add(article)
-            }
-            lifecycleScope.launch {
-                val articles = showAndCacheNewsArticles(newsArticles)
-                val titles = ArrayList<String>()
-                val datesPublishedTime = ArrayList<String>()
-                val images = ArrayList<Bitmap>()
-                for (article in articles) {
-                    titles.add(article.title)
-
-                    val dateInString = article.datePublishedTime
-                    val date = DateParser.parseDate(dateInString)
-
-                    datesPublishedTime.add(date)
-                    images.add(article.image)
-                }
-
-                // init recycler params
-                val layoutManager = GridLayoutManager(context, 1)
-                val adapter = NewsListAdapter(titles, datesPublishedTime, images)
-
-                mNewsArticlesRecycler!!.setHasFixedSize(true)
-                mNewsArticlesRecycler!!.layoutManager = layoutManager
-                mNewsArticlesRecycler!!.adapter = adapter
-                customAnims!!.setRecyclerAnim(mNewsArticlesRecycler!!)
-            }
-        }
-
-        mReloadFragmentFab!!.setOnClickListener {
-            customAnims!!.setClickAnim(mReloadFragmentFab!!)
-
-            // Full fragment recreating
-            findNavController().navigate(
-                R.id.searchFragment,
-                arguments,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.searchFragment, true)
-                    .build()
-            )
-        }
-
-        mSearchBtn!!.setOnClickListener {
-            customAnims!!.setClickAnim(mSearchBtn!!)
-
-            mUserRequest = binding.editTextUserRequest
-
-            val userRequest = mUserRequest!!.text.toString()
-            if (!ViewExceptions.isEmptyInputField(userRequest)) {
-                val job: Job = GlobalScope.launch(Dispatchers.IO) {
-
-                    when {
-                        foundAnyPages(getArticles(userRequest)) == null -> {
-                            requireActivity().runOnUiThread { showNoConnectionError() }
-
-                        }
-                        foundAnyPages(getArticles(userRequest)) == false -> {
-                            requireActivity().runOnUiThread {
-                                showIncorrectFieldTextError(
-                                    mUserRequest!!
-                                )
-                            }
-                        }
-                        else -> {
-                            // Hide all views (only recycler on the screen) for comfortable articles viewing
-                            requireActivity().runOnUiThread {
-                                view.hideKeyboard()
-
-                                customAnims!!.setViewOutAnim(
-                                    mSearchBtn!!,
-                                    mSearchField!!,
-                                    mUserRequest!!
-                                )
-                                ViewManager.hideView(
-                                    mNewsFound!!,
-                                    mSearchBtn!!,
-                                    mSearchField!!,
-                                    mUserRequest!!,
-                                    mNewsArticlesRecycler!!
-                                )
-
-                                mRequestText!!.text =
-                                    MessageBuilder.getFoundResponseMessage(userLang!!, userRequest)
-                                customAnims!!.setViewInAnim(
-                                    mProgressBar!!,
-                                    mRequestText!!,
-                                    mReloadFragmentFab!!
-                                )
-                                ViewManager.showView(
-                                    mProgressBar!!,
-                                    mRequestText!!,
-                                    mReloadFragmentFab!!
-                                )
-                            }
-
-                            showAndCacheArticles(getArticles(userRequest)!!)
-                            requireActivity().runOnUiThread {
-                                ViewManager.hideView(mProgressBar!!)
-                            }
-                        }
-                    }
-                }
-                job.start()
-            } else {
-                ViewExceptions.showEmptyInputFieldError(requireContext(), mUserRequest!!)
-            }
-        }
-
-
+        newsLD.observe(viewLifecycleOwner) { onLoadNews(it) }
+        mReloadFragmentFab!!.setOnClickListener { onClickFabReloadFragment(it) }
+        mSearchBtn!!.setOnClickListener { onClickSearchButton(it) }
     }
 
     private suspend fun showAndCacheNewsArticles(newsArticles: ArrayList<NewsArticleItem>): ArrayList<NewsArticlesItemRecycler> =
@@ -223,32 +115,12 @@ class SearchFragment : Fragment() {
 
     private suspend fun showAndCacheArticles(articles: ArrayList<ArticleItem>) =
         withContext(Dispatchers.Main) {
-            val titles: ArrayList<String> = ArrayList()
-            val descriptions: ArrayList<String> = ArrayList()
-            val ids: ArrayList<Long> = ArrayList()
+            setArticlesRecycler(articles)
 
-            for (article in articles) {
-                titles.add(article.title)
-                descriptions.add(article.description)
-                ids.add(article.pageId)
-            }
-
-            // init recycler params
-            val layoutManager = GridLayoutManager(context, 1)
-            val adapter = ArticlesListAdapter(titles, descriptions, ids)
-            val recyclerView =
-                requireActivity().findViewById<RecyclerView>(R.id.recyclerViewArticlesList)
-
-            // Show list of articles on display (recycler: title and brief description)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.layoutManager = layoutManager
-            recyclerView.adapter = adapter
-            customAnims!!.setRecyclerAnim(recyclerView)
-
-            recyclerView.addOnItemTouchListener(
+            mArticlesRecycler!!.addOnItemTouchListener(
                 ArticleItemClickListener(
                     requireContext(),
-                    recyclerView,
+                    mArticlesRecycler!!,
                     object : ArticleItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             customAnims!!.setClickAnim(view)
@@ -274,6 +146,55 @@ class SearchFragment : Fragment() {
                     })
             )
         }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun setNewsArticlesRecycler() {
+        val articles = showAndCacheNewsArticles(newsArticles)
+        val titles = ArrayList<String>()
+        val datesPublishedTime = ArrayList<String>()
+        val images = ArrayList<Bitmap>()
+        for (article in articles) {
+            titles.add(article.title)
+
+            val dateInString = article.datePublishedTime
+            val date = DateParser.parseDate(dateInString)
+
+            datesPublishedTime.add(date)
+            images.add(article.image)
+        }
+
+        // init recycler params
+        val layoutManager = GridLayoutManager(context, 1)
+        val adapter = NewsListAdapter(titles, datesPublishedTime, images)
+
+        mNewsArticlesRecycler!!.setHasFixedSize(true)
+        mNewsArticlesRecycler!!.layoutManager = layoutManager
+        mNewsArticlesRecycler!!.adapter = adapter
+        customAnims!!.setRecyclerAnim(mNewsArticlesRecycler!!)
+    }
+
+    private fun setArticlesRecycler(articles: ArrayList<ArticleItem>) {
+        val titles: ArrayList<String> = ArrayList()
+        val descriptions: ArrayList<String> = ArrayList()
+
+        for (article in articles) {
+            titles.add(article.title)
+            descriptions.add(article.description)
+            ids.add(article.pageId)
+        }
+
+        // init recycler params
+        val layoutManager = GridLayoutManager(context, 1)
+        val adapter = ArticlesListAdapter(titles, descriptions, ids)
+        mArticlesRecycler =
+            requireActivity().findViewById(R.id.recyclerViewArticlesList)
+
+        // Show list of articles on display (recycler: title and brief description)
+        mArticlesRecycler!!.setHasFixedSize(true)
+        mArticlesRecycler!!.layoutManager = layoutManager
+        mArticlesRecycler!!.adapter = adapter
+        customAnims!!.setRecyclerAnim(mArticlesRecycler!!)
+    }
 
     private fun getArticles(request: String): ArrayList<ArticleItem>? {
         // Param `request` -- user's request (in search textInput field)
@@ -307,6 +228,92 @@ class SearchFragment : Fragment() {
         val duration = Toast.LENGTH_SHORT
         val toast = Toast.makeText(requireContext(), text, duration)
         toast.show()
+    }
+
+    private fun onLoadNews(articles: ArrayList<NewsArticleItem>) {
+        for (article in articles) {
+            newsArticles.add(article)
+        }
+        lifecycleScope.launch {
+            setNewsArticlesRecycler()
+        }
+    }
+
+    private fun onClickFabReloadFragment(view: View) {
+        customAnims!!.setClickAnim(mReloadFragmentFab!!)
+        findNavController().navigate(
+            R.id.searchFragment,
+            arguments,
+            NavOptions.Builder()
+                .setPopUpTo(R.id.searchFragment, true)
+                .build()
+        )
+    }
+
+    private fun onClickSearchButton(view: View) {
+        customAnims!!.setClickAnim(mSearchBtn!!)
+
+        mUserRequest = binding.editTextUserRequest
+
+        val userRequest = mUserRequest!!.text.toString()
+        if (!ViewExceptions.isEmptyInputField(userRequest)) {
+            val job: Job = GlobalScope.launch(Dispatchers.IO) {
+
+                when {
+                    foundAnyPages(getArticles(userRequest)) == null -> {
+                        requireActivity().runOnUiThread { showNoConnectionError() }
+
+                    }
+                    foundAnyPages(getArticles(userRequest)) == false -> {
+                        requireActivity().runOnUiThread {
+                            showIncorrectFieldTextError(
+                                mUserRequest!!
+                            )
+                        }
+                    }
+                    else -> {
+                        // Hide all views (only recycler on the screen) for comfortable articles viewing
+                        requireActivity().runOnUiThread {
+                            view.hideKeyboard()
+
+                            customAnims!!.setViewOutAnim(
+                                mSearchBtn!!,
+                                mSearchField!!,
+                                mUserRequest!!
+                            )
+                            ViewManager.hideView(
+                                mNewsFound!!,
+                                mSearchBtn!!,
+                                mSearchField!!,
+                                mUserRequest!!,
+                                mNewsArticlesRecycler!!
+                            )
+
+                            mRequestText!!.text =
+                                MessageBuilder.getFoundResponseMessage(userLang!!, userRequest)
+                            customAnims!!.setViewInAnim(
+                                mProgressBar!!,
+                                mRequestText!!,
+                                mReloadFragmentFab!!
+                            )
+                            ViewManager.showView(
+                                mProgressBar!!,
+                                mRequestText!!,
+                                mReloadFragmentFab!!
+                            )
+                        }
+
+                        showAndCacheArticles(getArticles(userRequest)!!)
+                        requireActivity().runOnUiThread {
+                            ViewManager.hideView(mProgressBar!!)
+                        }
+                    }
+                }
+            }
+            job.start()
+        } else {
+            ViewExceptions.showEmptyInputFieldError(requireContext(), mUserRequest!!)
+        }
     }
 
     private fun initRes() {
