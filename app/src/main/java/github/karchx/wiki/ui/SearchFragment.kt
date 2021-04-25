@@ -91,7 +91,8 @@ class SearchFragment : Fragment() {
         customAnims!!.setViewInAnim(mNewsFound!!)
         newsEngine.getNews(newsLD, userLang)
         newsLD.observe(viewLifecycleOwner) { onLoadNews(it) }
-        mReloadFragmentFab!!.setOnClickListener { onClickFabReloadFragment(it) }
+
+        mReloadFragmentFab!!.setOnClickListener { onClickFabReloadFragment() }
         mSearchBtn!!.setOnClickListener { onClickSearchButton(it) }
     }
 
@@ -234,12 +235,10 @@ class SearchFragment : Fragment() {
         for (article in articles) {
             newsArticles.add(article)
         }
-        lifecycleScope.launch {
-            setNewsArticlesRecycler()
-        }
+        lifecycleScope.launch { setNewsArticlesRecycler() }
     }
 
-    private fun onClickFabReloadFragment(view: View) {
+    private fun onClickFabReloadFragment() {
         customAnims!!.setClickAnim(mReloadFragmentFab!!)
         findNavController().navigate(
             R.id.searchFragment,
@@ -262,7 +261,6 @@ class SearchFragment : Fragment() {
                 when {
                     foundAnyPages(getArticles(userRequest)) == null -> {
                         requireActivity().runOnUiThread { showNoConnectionError() }
-
                     }
                     foundAnyPages(getArticles(userRequest)) == false -> {
                         requireActivity().runOnUiThread {
