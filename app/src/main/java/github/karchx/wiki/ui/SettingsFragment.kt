@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val langAbbreviations = arrayListOf("en", "ru", "es", "it", "zh")
+        val langAbbreviations = arrayListOf("en", "ru", "es", "it", "fr", "zh")
 
         val index = langAbbreviations.indexOf(userLang)
         langSpinner!!.setSelection(index)
