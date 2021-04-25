@@ -16,6 +16,8 @@ data class ArticleEntry(
     val lang: String,
     @ColumnInfo(name = "cache_time")
     val cacheTime: Date,
+    @ColumnInfo(name = "access_time")
+    val accessTime: Date,
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "text")

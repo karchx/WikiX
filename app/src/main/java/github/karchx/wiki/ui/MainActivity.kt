@@ -20,9 +20,9 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.articlePage -> {
+                R.id.articleHistoryPage -> {
                     val navController = findNavController(R.id.nav_host_fragment)
-                    navController.navigate(R.id.articleFragment)
+                    navController.navigate(R.id.articleHistoryFragment)
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.searchPage -> {

@@ -129,7 +129,7 @@ class SearchFragment : Fragment() {
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
-                                    userLang
+                                    userLang!!
                                 )
                             )
                         }
@@ -140,7 +140,7 @@ class SearchFragment : Fragment() {
                             findNavController().navigate(
                                 SearchFragmentDirections.actionSearchFragmentToArticleFragment(
                                     ids[position],
-                                    userLang
+                                    userLang!!
                                 )
                             )
                         }

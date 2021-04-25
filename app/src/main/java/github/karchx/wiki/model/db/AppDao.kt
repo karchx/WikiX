@@ -5,6 +5,7 @@
 
 package github.karchx.wiki.model.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,6 +14,9 @@ import java.util.*
 
 @Dao
 interface AppDao {
+    @Query("SELECT * FROM articles ORDER BY access_time DESC")
+    fun getArticlesHistory(): LiveData<List<ArticleEntry>>
+
     @Query("SELECT * FROM articles WHERE id = :articleId AND lang = :lang")
     suspend fun getArticle(articleId: Int, lang: String): ArticleEntry?
 
@@ -21,6 +25,9 @@ interface AppDao {
 
     @Query("DELETE FROM articles WHERE cache_time < :date")
     suspend fun deleteOutdatedArticles(date: Date)
+
+    @Query("UPDATE articles SET access_time = :date")
+    suspend fun updateArticleAccess(date: Date)
 
 //    @Query( "SELECT id, lang FROM articles")
 //    suspend fun getArticlesDebug(): List<DebugArticle>

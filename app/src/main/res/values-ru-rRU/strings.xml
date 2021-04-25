@@ -9,6 +9,7 @@
     <string name="search_in_wikipedia">Поиск в Википедии</string>
     <string name="find_button">Поиск</string>
     <string name="articles">Статьи</string>
+    <string name="articles_history">История</string>
     <string name="news_found">В новостях:</string>
     <string name="choose_language">Выбор языка (для статей и новостей):</string>
 </resources>

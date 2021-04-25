@@ -61,6 +61,8 @@ dependencies {
     // androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
     // Jetpack Compose Integration
     // implementation "androidx.navigation:navigation-compose:1.0.0-alpha07"
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.2.0"
     // Hilt and Dagger
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
