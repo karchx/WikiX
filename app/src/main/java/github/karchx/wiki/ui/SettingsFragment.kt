@@ -5,6 +5,8 @@
 
 package github.karchx.wiki.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +27,8 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var langSpinner: Spinner? = null
+    private var userLang: String? = null
+    private var prefs: SharedPreferences? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +44,11 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val langAbbreviations = arrayListOf("en", "ru", "es", "it", "zh")
+
+        val index = langAbbreviations.indexOf(userLang)
+        langSpinner!!.setSelection(index)
+
         langSpinner!!.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -47,9 +56,10 @@ class SettingsFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val langAbbreviation = arrayListOf("en", "ru", "es", "it", "zh")
-                val chosenLang = langAbbreviation[position]
-                print(chosenLang)
+                val chosenLang = langAbbreviations[position]
+                if (chosenLang != userLang) {
+                    prefs!!.edit().putString("lang", chosenLang).apply()
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -57,6 +67,8 @@ class SettingsFragment : Fragment() {
     }
 
     private fun initRes() {
+        prefs = requireActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        userLang = prefs!!.getString("lang", "en")
         langSpinner = binding.spinnerLanguages
     }
 }

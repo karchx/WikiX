@@ -11,6 +11,8 @@ import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
+import java.util.*
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -45,5 +47,9 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigation.selectedItemId = R.id.searchPage
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        val editor = getSharedPreferences("user_prefs", MODE_PRIVATE).edit()
+        editor.putString("lang", Locale.getDefault().language)
+        editor.apply()
     }
 }
