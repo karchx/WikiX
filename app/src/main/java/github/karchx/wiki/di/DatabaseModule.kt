@@ -22,9 +22,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "appDb.db"
         ).fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .fallbackToDestructiveMigrationFrom(1, 2, 3)
-            .build()
+                .build()
     }
 
     @Provides

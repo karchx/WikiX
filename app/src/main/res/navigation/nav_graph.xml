@@ -32,12 +32,18 @@
         tools:layout="@layout/article_fragment">
         <argument
             android:name="articleId"
-            android:defaultValue="0L"
             app:argType="long" />
         <argument
             android:name="lang"
-            android:defaultValue="en"
-            app:argType="string"
-            app:nullable="true" />
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/articleHistoryFragment"
+        android:name="github.karchx.wiki.ui.ArticleHistoryFragment"
+        android:label="article_history_fragment"
+        tools:layout="@layout/article_history_fragment" >
+        <action
+            android:id="@+id/action_articleHistoryFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
     </fragment>
 </navigation>

@@ -6,7 +6,9 @@
 package github.karchx.wiki.model
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import github.karchx.wiki.model.db.AppDao
+import github.karchx.wiki.model.db.ArticleEntry
 import github.karchx.wiki.ui.ArticlePage
 import io.github.rybalkinsd.kohttp.ext.asString
 import kotlinx.coroutines.Dispatchers
@@ -51,4 +53,8 @@ class Repository @Inject constructor(
             }
             return@withContext null
         }
+
+    fun getArticlesHistory(): LiveData<List<ArticleEntry>> {
+        return appDao.getArticlesHistory()
+    }
 }

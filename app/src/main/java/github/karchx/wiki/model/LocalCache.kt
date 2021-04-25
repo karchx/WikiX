@@ -16,20 +16,24 @@ class LocalCache(private val appDao: AppDao) {
 
     suspend fun getArticlePage(articleId: Int, lang: String): ArticlePage? {
         val arEntry = appDao.getArticle(articleId, lang)
-        return if (arEntry == null) {
-            null
+        if (arEntry == null) {
+            return null
         } else {
             if (isOutdatedArticle(arEntry)) {
                 deleteOutdatedArticles()
-                null
-            } else
-                ArticlePage(arEntry.id, arEntry.lang, arEntry.title, arEntry.text)
+                return null
+            } else {
+                GlobalScope.launch {
+                    appDao.updateArticleAccess(Date())
+                }
+                return ArticlePage(arEntry.id, arEntry.lang, arEntry.title, arEntry.text)
+            }
         }
     }
 
     suspend fun saveArticle(arPage: ArticlePage) {
         appDao.insertArticle(
-            ArticleEntry(arPage.pageId, arPage.lang, Date(), arPage.title, arPage.text)
+            ArticleEntry(arPage.pageId, arPage.lang, Date(), Date(), arPage.title, arPage.text)
         )
     }
 
