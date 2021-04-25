@@ -9,28 +9,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import github.karchx.wiki.R
+import github.karchx.wiki.databinding.SearchFragmentBinding
+import github.karchx.wiki.databinding.SettingsFragmentBinding
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
-    private val viewModel: SettingsViewModel by viewModels()
+
+    private var _binding: SearchFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    private var langSpinner: Spinner? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.settings_fragment, container, false)
+    ): View {
+        setHasOptionsMenu(true)
+        _binding = SettingsFragmentBinding.inflate(inflater, container, false)
+
+        // Return the fragment view/layout
+        return binding.root
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        viewModel.text.observe(viewLifecycleOwner) {
-//            view.findViewById<TextView>(R.id.testString).text = it
-//        }
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    private fun initRes() {
+    }
 }
