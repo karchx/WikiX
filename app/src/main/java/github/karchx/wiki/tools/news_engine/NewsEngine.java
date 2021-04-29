@@ -12,7 +12,7 @@ import java.util.List;
 
 public class NewsEngine {
 
-    TokenManager tokenManager = new TokenManager(9);
+    TokenManager tokenManager = new TokenManager(0);
     NewsApiClient newsApiClient = new NewsApiClient(tokenManager.getToken());
 
     public void getNews(MutableLiveData<ArrayList<NewsArticleItem>> newsArticles, String userLang) {
