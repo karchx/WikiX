@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wiki">
         <activity
+            android:label="WikiX (Beta)"
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
