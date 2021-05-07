@@ -27,6 +27,5 @@
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.ArticleHistoryFragment"
         tools:listitem="@layout/article_history_item"
-
         tools:viewBindingIgnore="true" />
 </LinearLayout>

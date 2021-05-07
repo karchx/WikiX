@@ -16,7 +16,8 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.ArticleHistoryFragment">
+        tools:context=".ui.ArticleHistoryFragment"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <TextView
             style="@style/TextViewSecondary"
