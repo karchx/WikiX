@@ -19,6 +19,7 @@
         tools:context=".ui.ArticleHistoryFragment">
 
         <TextView
+            style="@style/TextViewSecondary"
             android:id="@+id/articleLang"
             android:layout_width="30sp"
             android:layout_height="wrap_content"
@@ -32,6 +33,7 @@
             tools:text="ru" />
 
         <TextView
+            style="@style/TextViewRegular"
             android:id="@+id/articleTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
