@@ -26,7 +26,7 @@ class ArticleHistoryAdapter(private val onClickListener: (Int,String)->Unit)
         fun bind( item: ArticleEntry, onClickListener: (Int,String)->Unit ) {
             binding.articleLang.text = item.lang
             binding.articleTitle.text = item.title
-            binding.root.setOnClickListener { onClickListener(item.id, item.lang ); }
+            binding.root.setOnClickListener { onClickListener( item.id, item.lang ); }
         }
 
         companion object {

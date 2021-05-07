@@ -16,9 +16,11 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.ArticleHistoryFragment">
+        tools:context=".ui.ArticleHistoryFragment"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <TextView
+            style="@style/TextViewSecondary"
             android:id="@+id/articleLang"
             android:layout_width="30sp"
             android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
             tools:text="ru" />
 
         <TextView
+            style="@style/TextViewRegular"
             android:id="@+id/articleTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -13,7 +13,8 @@
     tools:context=".ui.ArticleHistoryFragment" >
 
     <TextView
-        style="@style/TextViewRegular"
+        style="@style/TextViewHeader"
+        android:layout_margin="14dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/saved_articles" />
@@ -26,6 +27,5 @@
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.ArticleHistoryFragment"
         tools:listitem="@layout/article_history_item"
-
         tools:viewBindingIgnore="true" />
 </LinearLayout>
