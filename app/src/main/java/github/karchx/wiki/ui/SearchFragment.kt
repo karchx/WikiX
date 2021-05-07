@@ -231,6 +231,7 @@ class SearchFragment : Fragment() {
         toast.show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun onLoadNews(articles: ArrayList<NewsArticleItem>) {
         for (article in articles) {
             newsArticles.add(article)
